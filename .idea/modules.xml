@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Parsing/Parsing.iml" filepath="$PROJECT_DIR$/Parsing/Parsing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/segfault.tsp-spm-discord-bot.iml" filepath="$PROJECT_DIR$/.idea/modules/segfault.tsp-spm-discord-bot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/segfault.tsp-spm-discord-bot.main.iml" filepath="$PROJECT_DIR$/.idea/modules/segfault.tsp-spm-discord-bot.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/segfault.tsp-spm-discord-bot.test.iml" filepath="$PROJECT_DIR$/.idea/modules/segfault.tsp-spm-discord-bot.test.iml" />
     </modules>
   </component>
 </project>
