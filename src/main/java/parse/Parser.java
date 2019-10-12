@@ -3,8 +3,6 @@ package parse;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 
-import javax.security.auth.login.LoginException;
-
 public class Parser {
     private char cmdMark = '!';
 
@@ -13,13 +11,16 @@ public class Parser {
         String token = ""; //TODO - Insert token.
         //TODO - Have gitignored text files with personal tokens in it.
 
-        builder.setToken( token );
-        try {
-            builder.buildAsync();
-        } catch (LoginException e) {
-            System.out.println( "Invalid login." );
-            e.printStackTrace();
-        }
+//        builder.setToken( token );
+//        try {
+//            builder.buildAsync();
+//        } catch (LoginException e) {
+//            System.out.println( "Invalid login." );
+//            e.printStackTrace();
+//        }
+
+        Parser parser = new Parser();
+        parser.parseCommand( "help me" );
     }
 
     public void parseCommand( String command ) {
@@ -134,7 +135,7 @@ public class Parser {
 
             case "!help":
                 if ( cmdArgs.length == 1 ) {
-                    help( null );
+                    help( );
                 } else {
                     String commandName = cmdArgs[1];
                     help( commandName );
@@ -148,24 +149,35 @@ public class Parser {
     }
 
     public void createPoll ( String pollName, String[] responses ) {
+        System.out.println( "Called create poll.");
     }
 
     public void editPoll ( String pollName, String newName, String[] newResponses ) {
+        System.out.println( "Called edit poll.");
     }
 
     public void answerPoll ( String pollName, String response ) {
+        System.out.println( "Called answer poll.");
     }
 
     public void createEvent ( String eventName, String location, String time ) {
+        System.out.println( "Called create event.");
     }
 
     public void editEvent ( String eventName, String newName, String newLocation, String newTime ) {
+        System.out.println( "Called edit event.");
     }
 
     public void answerEvent ( String eventName, boolean going ) {
+        System.out.println( "Called answer event.");
     }
 
     public void help ( String command ) {
-        //Leave string null for default help command.
+        System.out.println( "Called specific help.");
+    }
+
+    public void help () {
+        //Default help
+        System.out.println( "Called default help.");
     }
 }
