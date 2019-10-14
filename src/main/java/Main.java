@@ -5,7 +5,6 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import javax.security.auth.login.LoginException;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Properties;
 
 public class Main {
@@ -17,8 +16,6 @@ public class Main {
      * Initializes bot.
      */
     private void init() {
-        System.out.println(Arrays.toString("hello \" this is text\" hello2".split("(\".*\")|( )")));
-
         final String token = this.loadToken();
         final ListenerAdapter messageListener = new MessageListener();
         try {
