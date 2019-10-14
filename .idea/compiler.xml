@@ -4,6 +4,8 @@
     <bytecodeTargetLevel>
       <module name="segfault.tsp-spm-discord-bot.main" target="1.8" />
       <module name="segfault.tsp-spm-discord-bot.test" target="1.8" />
+      <module name="tsp-spm-discord-bot.main" target="1.8" />
+      <module name="tsp-spm-discord-bot.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

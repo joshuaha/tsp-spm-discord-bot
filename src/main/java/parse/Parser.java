@@ -1,29 +1,13 @@
 package parse;
 
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class Parser {
     private char cmdMark = '!';
 
-    public static void main(String[] args) {
-        JDABuilder builder = new JDABuilder( AccountType.BOT );
-        String token = ""; //TODO - Insert token.
-        //TODO - Have gitignored text files with personal tokens in it.
+    public void parse(MessageReceivedEvent event) {
+        final String command = event.getMessage().getContentRaw().trim();
 
-//        builder.setToken( token );
-//        try {
-//            builder.buildAsync();
-//        } catch (LoginException e) {
-//            System.out.println( "Invalid login." );
-//            e.printStackTrace();
-//        }
-
-        Parser parser = new Parser();
-        parser.parseCommand( "help me" );
-    }
-
-    public void parseCommand( String command ) {
         //!poll create <pollname> <ans1>, <and2>, ...
         //!poll edit <pollname> <newname> <newAns1> <newAns2> ... -- More commands = add poll option
         //!poll answer <pollname> <ans>
@@ -34,150 +18,150 @@ public class Parser {
         //!help <commandname>
 
         //If not command marked ignore the text.
-        if ( !command.startsWith("!") ) return;
+        if (!command.startsWith("!")) return;
 
-        String[] cmdArgs = command.split( " ");
+        String[] cmdArgs = command.split(" ");
 
-        switch ( cmdArgs[0] ) {
+        switch (cmdArgs[0]) {
             case "!poll":
-                if ( cmdArgs.length < 4 ) {
-                    System.out.println( "Invalid number of arguments" );
+                if (cmdArgs.length < 4) {
+                    System.out.println("Invalid number of arguments");
                     break;
                 }
 
                 String pollName = cmdArgs[2];
 
-                switch ( cmdArgs[1] ) {
+                switch (cmdArgs[1]) {
                     case "create":
-                        if ( cmdArgs.length < 5 ) {
-                            System.out.println( "Invalid number of arguments" ); //Poll must have at least two options.
+                        if (cmdArgs.length < 5) {
+                            System.out.println("Invalid number of arguments"); //Poll must have at least two options.
                             break;
                         }
-                        String[] answers = new String[ cmdArgs.length - 3];
-                        for ( int i = 3; i < cmdArgs.length; i++ ) {
-                            answers[i-3] = cmdArgs[i];
+                        String[] answers = new String[cmdArgs.length - 3];
+                        for (int i = 3; i < cmdArgs.length; i++) {
+                            answers[i - 3] = cmdArgs[i];
                         }
-                        createPoll( pollName, answers );
+                        createPoll(pollName, answers);
                         break;
 
                     case "edit":
-                        if ( cmdArgs.length < 6 ) {
-                            System.out.println( "Invalid number of arguments" );
+                        if (cmdArgs.length < 6) {
+                            System.out.println("Invalid number of arguments");
                             break;
                         }
                         String newName = cmdArgs[3];
-                        String[] newAnswers = new String[ cmdArgs.length - 4];
-                        for ( int i = 4; i < cmdArgs.length; i++ ) {
-                            newAnswers[i-4] = cmdArgs[i];
+                        String[] newAnswers = new String[cmdArgs.length - 4];
+                        for (int i = 4; i < cmdArgs.length; i++) {
+                            newAnswers[i - 4] = cmdArgs[i];
                         }
-                        editPoll( pollName, newName, newAnswers );
+                        editPoll(pollName, newName, newAnswers);
                         break;
 
                     case "answer":
                         String response = cmdArgs[3];
-                        answerPoll( pollName, response );
+                        answerPoll(pollName, response);
                         break;
 
                     default:
-                        System.out.println( "Invalid poll command" );
+                        System.out.println("Invalid poll command");
                         break;
                 }
                 break;
 
             case "!event":
-                if ( cmdArgs.length < 4 ) {
-                    System.out.println( "Invalid number of arguments" );
+                if (cmdArgs.length < 4) {
+                    System.out.println("Invalid number of arguments");
                     break;
                 }
 
                 String eventName = cmdArgs[2];
 
-                switch ( cmdArgs[1] ) {
+                switch (cmdArgs[1]) {
                     case "create":
-                        if ( cmdArgs.length < 5 ) {
-                            System.out.println( "Invalid number of arguments" );
+                        if (cmdArgs.length < 5) {
+                            System.out.println("Invalid number of arguments");
                             break;
                         }
                         String location = cmdArgs[3];
                         String time = cmdArgs[4];
-                        createEvent( eventName, location, time );
+                        createEvent(eventName, location, time);
                         break;
 
                     case "edit":
-                        if ( cmdArgs.length < 6 ) {
-                            System.out.println( "Invalid number of arguments" );
+                        if (cmdArgs.length < 6) {
+                            System.out.println("Invalid number of arguments");
                             break;
                         }
                         String newEventName = cmdArgs[3];
                         String newLocation = cmdArgs[4];
                         String newTime = cmdArgs[5];
-                        editEvent( eventName, newEventName, newLocation, newTime);
+                        editEvent(eventName, newEventName, newLocation, newTime);
                         break;
 
                     case "answer":
                         boolean isGoing;
-                        if ( cmdArgs[3].equalsIgnoreCase( "y" ) ) {
+                        if (cmdArgs[3].equalsIgnoreCase("y")) {
                             isGoing = true;
-                        } else if ( cmdArgs[3].equalsIgnoreCase( "n" ) ) {
+                        } else if (cmdArgs[3].equalsIgnoreCase("n")) {
                             isGoing = false;
                         } else {
-                            System.out.println( "Invalid argument.");
+                            System.out.println("Invalid argument.");
                             break;
                         }
-                        answerEvent( eventName, isGoing );
+                        answerEvent(eventName, isGoing);
                         break;
 
                     default:
-                        System.out.println( "Invalid event command" );
+                        System.out.println("Invalid event command");
                         break;
                 }
                 break;
 
             case "!help":
-                if ( cmdArgs.length == 1 ) {
-                    help( );
+                if (cmdArgs.length == 1) {
+                    help();
                 } else {
                     String commandName = cmdArgs[1];
-                    help( commandName );
+                    help(commandName);
                 }
                 break;
 
             default:
-                System.out.println( "Invalid Command" );
+                System.out.println("Invalid Command");
                 break;
-       }
+        }
     }
 
-    public void createPoll ( String pollName, String[] responses ) {
-        System.out.println( "Called create poll.");
+    public void createPoll(String pollName, String[] responses) {
+        System.out.println("Called create poll.");
     }
 
-    public void editPoll ( String pollName, String newName, String[] newResponses ) {
-        System.out.println( "Called edit poll.");
+    public void editPoll(String pollName, String newName, String[] newResponses) {
+        System.out.println("Called edit poll.");
     }
 
-    public void answerPoll ( String pollName, String response ) {
-        System.out.println( "Called answer poll.");
+    public void answerPoll(String pollName, String response) {
+        System.out.println("Called answer poll.");
     }
 
-    public void createEvent ( String eventName, String location, String time ) {
-        System.out.println( "Called create event.");
+    public void createEvent(String eventName, String location, String time) {
+        System.out.println("Called create event.");
     }
 
-    public void editEvent ( String eventName, String newName, String newLocation, String newTime ) {
-        System.out.println( "Called edit event.");
+    public void editEvent(String eventName, String newName, String newLocation, String newTime) {
+        System.out.println("Called edit event.");
     }
 
-    public void answerEvent ( String eventName, boolean going ) {
-        System.out.println( "Called answer event.");
+    public void answerEvent(String eventName, boolean going) {
+        System.out.println("Called answer event.");
     }
 
-    public void help ( String command ) {
-        System.out.println( "Called specific help.");
+    public void help(String command) {
+        System.out.println("Called specific help.");
     }
 
-    public void help () {
+    public void help() {
         //Default help
-        System.out.println( "Called default help.");
+        System.out.println("Called default help.");
     }
 }
