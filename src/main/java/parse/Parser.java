@@ -2,6 +2,11 @@ package parse;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class Parser {
     private char cmdMark = '!';
 
@@ -20,7 +25,7 @@ public class Parser {
         //If not command marked ignore the text.
         if (!command.startsWith("!")) return;
 
-        String[] cmdArgs = command.split(" ");
+        String[] cmdArgs = this.splitArguments(command);
 
         switch (cmdArgs[0]) {
             case "!poll":
@@ -130,6 +135,30 @@ public class Parser {
                 System.out.println("Invalid Command");
                 break;
         }
+    }
+
+    /**
+     * Splits a command containing arguments separated by whitespace and quotations and splits
+     * it into an array of arguments.
+     *
+     * @param command The entire command received from the user
+     * @return The command split into an array of arguments
+     */
+    private String[] splitArguments(String command) {
+        final List<String> args = new ArrayList<>();
+        //trim, replace any whitespace with a single space, then split on quotation marks
+        final String[] splitByQuotes = command.trim().replaceAll("\\s+", " ").split("\"");
+        for (int i = 0; i < splitByQuotes.length; i++) {
+            //if string is not inside quotations, split on spaces
+            //if it is inside quotations, do not split but add entire string
+            if (i % 2 == 0)
+                Collections.addAll(args, splitByQuotes[i].trim().split(" "));
+            else
+                Collections.addAll(args, splitByQuotes[i].trim());
+
+        }
+        //convert array list to array of arguments
+        return args.toArray(new String[]{});
     }
 
     public void createPoll(String pollName, String[] responses) {
