@@ -1,11 +1,14 @@
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import org.joda.time.LocalDateTime;
+import parse.Parser;
 
 public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (!event.getAuthor().isBot() && event.getMessage().getContentRaw().trim().toLowerCase().equals("hello")) {
-            event.getChannel().sendMessage("Hello, " + event.getAuthor().getAsMention()).queue();
+        if (!event.getAuthor().isBot()) {
+            //TODO - Check that this is the correct way to get the message string.
+            new Parser().parse( event.getMessage().toString() );
         }
     }
 }
