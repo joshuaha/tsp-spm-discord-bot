@@ -1,8 +1,8 @@
 package bot;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TempData {
-    public static final List<DiscordPoll> polls = new ArrayList<>();
+    public static final Map<String, DiscordPoll> polls = new HashMap<>();
 }

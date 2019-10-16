@@ -1,8 +1,10 @@
 package parse;
 
+import bot.DiscordPoll;
 import bot.TempData;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -13,12 +15,12 @@ public class Parser {
 
         //Testing the parser
         Parser parser = new Parser();
-        parser.parse( "!poll create name \"answer name\" ans2" );
+        parser.parse( "!poll create name \"answer name\" ans2", 0 );
 
     }
 
-    public ArrayList<String> splitString ( String command ) {
-        ArrayList<String> split = new ArrayList<>();
+    public List<String> splitString ( String command ) {
+        List<String> split = new ArrayList<>();
 
         //Separates by space but leaves strings surrounded by quotes as its own string.
         Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(command);
@@ -29,7 +31,7 @@ public class Parser {
         return split;
     }
 
-    public void parse( String command ) {
+    public void parse( String command, long user ) {
         //!poll create "pollname" "ans1", "and2", ...
         //!poll edit "pollname" "newname" "newAns1" "newAns2" ... -- More commands = add poll option
         //!poll answer "pollname" "ans"
@@ -82,7 +84,7 @@ public class Parser {
 
                     case "answer":
                         String response = cmdArgs.get(3);
-                        answerPoll( pollName, response );
+                        answerPoll( pollName, response, user );
                         break;
 
                     default:
@@ -181,14 +183,20 @@ public class Parser {
 
     public void createPoll(String pollName, String[] responses) {
         System.out.println("Called create poll.");
+        final DiscordPoll poll = new DiscordPoll();
+        poll.setName(pollName);
+        poll.setOptions(Arrays.asList(responses));
+        TempData.polls.put(poll.getName(), poll);
     }
 
     public void editPoll(String pollName, String newName, String[] newResponses) {
         System.out.println("Called edit poll.");
     }
 
-    public void answerPoll(String pollName, String response) {
+    public void answerPoll(String pollName, String response, long user) {
         System.out.println("Called answer poll.");
+        final DiscordPoll poll = TempData.polls.get(pollName);
+        poll.setVote(user, poll.getOptions().indexOf(response));
     }
 
     public void createEvent(String eventName, String location, String time) {
