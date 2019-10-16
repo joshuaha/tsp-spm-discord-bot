@@ -144,7 +144,7 @@ public class Parser {
      * @param command The entire command received from the user
      * @return The command split into an array of arguments
      */
-    private String[] splitArguments(String command) {
+    protected  String[] splitArguments(String command) {
         final List<String> args = new ArrayList<>();
         //trim, replace any whitespace with a single space, then split on quotation marks
         final String[] splitByQuotes = command.trim().replaceAll("\\s+", " ").split("\"");
