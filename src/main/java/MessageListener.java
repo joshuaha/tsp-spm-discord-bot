@@ -7,7 +7,8 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (!event.getAuthor().isBot()) {
-            new Parser().parse(event);
+            //TODO - Check that this is the correct way to get the message string.
+            new Parser().parse( event.getMessage().toString() );
         }
     }
 }

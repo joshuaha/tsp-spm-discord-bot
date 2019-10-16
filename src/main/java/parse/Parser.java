@@ -1,70 +1,86 @@
 package parse;
 
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Parser {
-    private char cmdMark = '!';
+    public static void main(String[] args) {
 
-    public void parse(MessageReceivedEvent event) {
-        final String command = event.getMessage().getContentRaw().trim();
+        //Testing the parser
+        Parser parser = new Parser();
+        parser.parse( "!poll create name \"answer name\" ans2" );
 
-        //!poll create <pollname> <ans1>, <and2>, ...
-        //!poll edit <pollname> <newname> <newAns1> <newAns2> ... -- More commands = add poll option
-        //!poll answer <pollname> <ans>
-        //!event create <eventname> <location> <dateTime>
-        //!event edit <eventname> <newname> <newLocation> <newTime>
-        //!event answer <eventname> <y/n>
-        //!help
-        //!help <commandname>
+    }
 
-        //If not command marked ignore the text.
-        if (!command.startsWith("!")) return;
+    public ArrayList<String> splitString ( String command ) {
+        ArrayList<String> split = new ArrayList<>();
 
-        String[] cmdArgs = this.splitArguments(command);
+        //Separates by space but leaves strings surrounded by quotes as its own string.
+        Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(command);
+        while ( m.find() ) {
+            //Add .replace("\"", "") to remove surrounding quotes.
+            split.add(m.group(1).replace("\"", "") );
+        }
+        return split;
+    }
 
-        switch (cmdArgs[0]) {
+    public void parse( String command ) {
+        //!poll create "pollname" "ans1", "and2", ...
+        //!poll edit "pollname" "newname" "newAns1" "newAns2" ... -- More commands = add poll option
+        //!poll answer "pollname" "ans"
+        //!event create "eventname" "location" "time"
+        //time format: mm/dd/yyyy xx:xxAM
+        //!event edit "eventname" "newname" "newLocation" "newTime"
+        //!event answer "eventname" <y/n>
+
+        ArrayList<String> cmdArgs = splitString( command );
+
+        //Test that command is being split properly.
+//        for ( String str : cmdArgs ) {
+//            System.out.println( str );
+//        }
+
+        switch ( cmdArgs.get(0) ) {
             case "!poll":
-                if (cmdArgs.length < 4) {
-                    System.out.println("Invalid number of arguments");
+                if ( cmdArgs.size() < 4 ) {
+                    System.out.println( "Invalid number of arguments" );
                     break;
                 }
 
-                String pollName = cmdArgs[2];
+                String pollName = cmdArgs.get(2);
 
-                switch (cmdArgs[1]) {
+                switch ( cmdArgs.get(1) ) {
                     case "create":
-                        if (cmdArgs.length < 5) {
-                            System.out.println("Invalid number of arguments"); //Poll must have at least two options.
+                        if ( cmdArgs.size() < 5 ) {
+                            System.out.println( "Invalid number of arguments" ); //Poll must have at least two options.
                             break;
                         }
-                        String[] answers = new String[cmdArgs.length - 3];
-                        for (int i = 3; i < cmdArgs.length; i++) {
-                            answers[i - 3] = cmdArgs[i];
+                        String[] answers = new String[ cmdArgs.size() - 3];
+                        for ( int i = 3; i < cmdArgs.size(); i++ ) {
+                            answers[i-3] = cmdArgs.get(i);
                         }
                         createPoll(pollName, answers);
                         break;
 
                     case "edit":
-                        if (cmdArgs.length < 6) {
-                            System.out.println("Invalid number of arguments");
+                        if ( cmdArgs.size() < 6 ) {
+                            System.out.println( "Invalid number of arguments" );
                             break;
                         }
-                        String newName = cmdArgs[3];
-                        String[] newAnswers = new String[cmdArgs.length - 4];
-                        for (int i = 4; i < cmdArgs.length; i++) {
-                            newAnswers[i - 4] = cmdArgs[i];
+                        String newName = cmdArgs.get(3);
+                        String[] newAnswers = new String[ cmdArgs.size() - 4];
+                        for ( int i = 4; i < cmdArgs.size(); i++ ) {
+                            newAnswers[i-4] = cmdArgs.get(i);
                         }
                         editPoll(pollName, newName, newAnswers);
                         break;
 
                     case "answer":
-                        String response = cmdArgs[3];
-                        answerPoll(pollName, response);
+                        String response = cmdArgs.get(3);
+                        answerPoll( pollName, response );
                         break;
 
                     default:
@@ -74,40 +90,40 @@ public class Parser {
                 break;
 
             case "!event":
-                if (cmdArgs.length < 4) {
-                    System.out.println("Invalid number of arguments");
+                if ( cmdArgs.size() < 4 ) {
+                    System.out.println( "Invalid number of arguments" );
                     break;
                 }
 
-                String eventName = cmdArgs[2];
+                String eventName = cmdArgs.get(2);
 
-                switch (cmdArgs[1]) {
+                switch ( cmdArgs.get(1) ) {
                     case "create":
-                        if (cmdArgs.length < 5) {
-                            System.out.println("Invalid number of arguments");
+                        if ( cmdArgs.size() < 5 ) {
+                            System.out.println( "Invalid number of arguments" );
                             break;
                         }
-                        String location = cmdArgs[3];
-                        String time = cmdArgs[4];
-                        createEvent(eventName, location, time);
+                        String location = cmdArgs.get(3);
+                        String time = cmdArgs.get(4);
+                        createEvent( eventName, location, time );
                         break;
 
                     case "edit":
-                        if (cmdArgs.length < 6) {
-                            System.out.println("Invalid number of arguments");
+                        if ( cmdArgs.size() < 6 ) {
+                            System.out.println( "Invalid number of arguments" );
                             break;
                         }
-                        String newEventName = cmdArgs[3];
-                        String newLocation = cmdArgs[4];
-                        String newTime = cmdArgs[5];
-                        editEvent(eventName, newEventName, newLocation, newTime);
+                        String newEventName = cmdArgs.get(3);
+                        String newLocation = cmdArgs.get(4);
+                        String newTime = cmdArgs.get(5);
+                        editEvent( eventName, newEventName, newLocation, newTime);
                         break;
 
                     case "answer":
                         boolean isGoing;
-                        if (cmdArgs[3].equalsIgnoreCase("y")) {
+                        if ( cmdArgs.get(3).equalsIgnoreCase( "y" ) ) {
                             isGoing = true;
-                        } else if (cmdArgs[3].equalsIgnoreCase("n")) {
+                        } else if ( cmdArgs.get(3).equalsIgnoreCase( "n" ) ) {
                             isGoing = false;
                         } else {
                             System.out.println("Invalid argument.");
@@ -123,11 +139,11 @@ public class Parser {
                 break;
 
             case "!help":
-                if (cmdArgs.length == 1) {
-                    help();
+                if ( cmdArgs.size() == 1 ) {
+                    help( );
                 } else {
-                    String commandName = cmdArgs[1];
-                    help(commandName);
+                    String commandName = cmdArgs.get(1);
+                    help( commandName );
                 }
                 break;
 
