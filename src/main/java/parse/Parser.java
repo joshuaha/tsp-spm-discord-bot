@@ -1,6 +1,7 @@
 package parse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -36,7 +37,7 @@ public class Parser {
         //!event edit "eventname" "newname" "newLocation" "newTime"
         //!event answer "eventname" <y/n>
 
-        ArrayList<String> cmdArgs = splitString( command );
+        List<String> cmdArgs  = this.splitString(command);
 
         //Test that command is being split properly.
 //        for ( String str : cmdArgs ) {
