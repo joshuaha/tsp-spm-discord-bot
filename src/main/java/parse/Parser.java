@@ -46,10 +46,12 @@ public class Parser {
 
         switch (args[0]) {
             case "!poll":
+                /*
                 if (args.length < 4) {
                     System.out.println("Invalid number of arguments");
                     break;
                 }
+                */
 
                 String pollName = args[2];
 
@@ -79,9 +81,23 @@ public class Parser {
                         editPoll(pollName, newName, newAnswers);
                         break;
 
-                    case "answer":
+                    case "vote":
                         String response = args[3];
                         answerPoll(pollName, response, user);
+                        break;
+
+                    case "results":
+                        final DiscordPoll poll = TempData.polls.get(args[2]);
+                        final StringBuilder message = new StringBuilder();
+                        message.append(poll.getName()).append(System.lineSeparator());
+                        for (int i = 0; i < poll.getOptions().size(); i++) {
+                            message.append(poll.getOptions().get(i))
+                                    .append(": ")
+                                    .append(poll.getResults().get(i))
+                                    .append(System.lineSeparator());
+                        }
+                        event.getMessage().delete().queue();
+                        event.getMessage().getAuthor().openPrivateChannel().queue((channel) -> channel.sendMessage(message).queue());
                         break;
 
                     default:
