@@ -11,13 +11,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
-    public static void main(String[] args) {
-
-        //Testing the parser
-        Parser parser = new Parser();
-        parser.parse( "!poll create name \"answer name\" ans2", 0 );
-
-    }
+//    public static void main(String[] args) {
+//
+//        //Testing the parser
+//        Parser parser = new Parser();
+//        parser.parse( "!poll create name \"answer name\" ans2", 0 );
+//
+//    }
 
     public List<String> splitString ( String command ) {
         List<String> split = new ArrayList<>();
