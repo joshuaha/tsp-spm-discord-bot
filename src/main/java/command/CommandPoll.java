@@ -30,7 +30,7 @@ public class CommandPoll implements Command {
             this.create(pollName, options);
         } else if ("vote".equals(args[0])) {
             final String pollName = args[1];
-            final int vote = Integer.parseInt(args[2]);
+            final int vote = Integer.parseInt(args[2]) - 1;
             final long user = event.getAuthor().getIdLong();
             this.vote(pollName, user, vote, event);
         } else if ("results".equals(args[0])) {
