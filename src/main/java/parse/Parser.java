@@ -2,7 +2,6 @@ package parse;
 
 import bot.DiscordPoll;
 import bot.TempData;
-import command.CommandHelp;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
@@ -12,16 +11,17 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Deprecated
 public class Parser {
     public static void main(String[] args) {
 
         //Testing the parser
-        Parser parser = new Parser();
+        //Parser parser = new Parser();
         //parser.parse("!poll create name \"answer name\" ans2", 0);
 
     }
 
-    public List<String> splitString(String command) {
+    public String[] splitString(String command) {
         List<String> split = new ArrayList<>();
 
         //Separates by space but leaves strings surrounded by quotes as its own string.
@@ -30,10 +30,10 @@ public class Parser {
             //Add .replace("\"", "") to remove surrounding quotes.
             split.add(m.group(1).replace("\"", ""));
         }
-        return split;
+        return split.toArray(new String[]{});
     }
 
-    public void parse(String command, long user, MessageReceivedEvent event) {
+    public void parse(MessageReceivedEvent event) {
         //!poll create "pollname" "ans1", "and2", ...
         //!poll edit "pollname" "newname" "newAns1" "newAns2" ... -- More commands = add poll option
         //!poll answer "pollname" "ans"
@@ -42,17 +42,11 @@ public class Parser {
         //!event edit "eventname" "newname" "newLocation" "newTime"
         //!event answer "eventname" <y/n>
 
-        String[] args = this.splitString(command).toArray(new String[]{});
+        String[] args = this.splitString("");
+        long user = 0;
 
         switch (args[0]) {
             case "!poll":
-                /*
-                if (args.length < 4) {
-                    System.out.println("Invalid number of arguments");
-                    break;
-                }
-                */
-
                 String pollName = args[2];
 
                 switch (args[1]) {
@@ -87,17 +81,7 @@ public class Parser {
                         break;
 
                     case "results":
-                        final DiscordPoll poll = TempData.polls.get(args[2]);
-                        final StringBuilder message = new StringBuilder();
-                        message.append(poll.getName()).append(System.lineSeparator());
-                        for (int i = 0; i < poll.getOptions().size(); i++) {
-                            message.append(poll.getOptions().get(i))
-                                    .append(": ")
-                                    .append(poll.getResults().get(i))
-                                    .append(System.lineSeparator());
-                        }
-                        event.getMessage().delete().queue();
-                        event.getMessage().getAuthor().openPrivateChannel().queue((channel) -> channel.sendMessage(message).queue());
+
                         break;
 
                     default:
@@ -157,11 +141,11 @@ public class Parser {
 
             case "!help":
                 if (args.length == 1) {
-                    new CommandHelp().help(event);
+                    //new CommandHelp().help(event);
                     //help();
                 } else {
                     String commandName = args[1];
-                    new CommandHelp().specificHelp(commandName, event);
+                    //new CommandHelp().specificHelp(commandName, event);
                     //help(commandName);
                 }
                 break;
@@ -198,10 +182,6 @@ public class Parser {
 
     public void createPoll(String pollName, String[] responses) {
         System.out.println("Called create poll.");
-        final DiscordPoll poll = new DiscordPoll();
-        poll.setName(pollName);
-        poll.setOptions(Arrays.asList(responses));
-        TempData.polls.put(poll.getName(), poll);
     }
 
     public void editPoll(String pollName, String newName, String[] newResponses) {
@@ -210,8 +190,6 @@ public class Parser {
 
     public void answerPoll(String pollName, String response, long user) {
         System.out.println("Called answer poll.");
-        final DiscordPoll poll = TempData.polls.get(pollName);
-        poll.setVote(user, poll.getOptions().indexOf(response));
     }
 
     public void createEvent(String eventName, String location, String time) {

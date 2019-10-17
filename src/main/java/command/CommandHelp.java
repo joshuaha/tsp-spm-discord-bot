@@ -1,4 +1,5 @@
 package command;
+
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -8,29 +9,44 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Scanner;
 
-public class CommandHelp extends ListenerAdapter {
+public class CommandHelp implements Command {
+    CommandHelp() {
+
+    }
 
     /**
-     * Sends the message for the !help command to the channel that it was called in
-     *
-     * @param event the event representing the help command being called
+     * {@inheritDoc}
      */
-    public void help(MessageReceivedEvent event) {
+    @Override
+    public String getAlias() {
+        return "help";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute(String[] args, MessageReceivedEvent event) {
+        event.getChannel().sendMessage(this.getHelpMessage()).queue();
+    }
+
+    /**
+     * Retrieves the message displayed when the Help command is called.
+     */
+    public String getHelpMessage() {
         try {
             final URL resource = this.getClass().getClassLoader().getResource("HelpOutput.txt");
-            if (resource != null) {
-                final File file = new File(resource.toURI());
-                final Scanner in = new Scanner(file);
-                final StringBuilder message = new StringBuilder();
-                while (in.hasNextLine()) {
-                    message.append(in.nextLine()).append(System.lineSeparator());
-                }
-                in.close();
-                event.getChannel().sendMessage(message.toString()).queue();
+            final File file = resource == null ? new File("") : new File(resource.toURI());
+            final Scanner in = new Scanner(file);
+            final StringBuilder message = new StringBuilder();
+            while (in.hasNextLine()) {
+                message.append(in.nextLine()).append(System.lineSeparator());
             }
+            in.close();
+            return message.toString();
         } catch (FileNotFoundException | URISyntaxException ex) {
-            event.getChannel().sendMessage("Help information missing!").queue();
             ex.printStackTrace();
+            return "Help information missing!";
         }
     }
 
