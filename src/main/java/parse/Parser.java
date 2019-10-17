@@ -2,6 +2,8 @@ package parse;
 
 import bot.DiscordPoll;
 import bot.TempData;
+import command.CommandHelp;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,23 +17,23 @@ public class Parser {
 
         //Testing the parser
         Parser parser = new Parser();
-        parser.parse( "!poll create name \"answer name\" ans2", 0 );
+        //parser.parse("!poll create name \"answer name\" ans2", 0);
 
     }
 
-    public List<String> splitString ( String command ) {
+    public List<String> splitString(String command) {
         List<String> split = new ArrayList<>();
 
         //Separates by space but leaves strings surrounded by quotes as its own string.
         Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(command);
-        while ( m.find() ) {
+        while (m.find()) {
             //Add .replace("\"", "") to remove surrounding quotes.
-            split.add(m.group(1).replace("\"", "") );
+            split.add(m.group(1).replace("\"", ""));
         }
         return split;
     }
 
-    public void parse( String command, long user ) {
+    public void parse(String command, long user, MessageReceivedEvent event) {
         //!poll create "pollname" "ans1", "and2", ...
         //!poll edit "pollname" "newname" "newAns1" "newAns2" ... -- More commands = add poll option
         //!poll answer "pollname" "ans"
@@ -40,51 +42,46 @@ public class Parser {
         //!event edit "eventname" "newname" "newLocation" "newTime"
         //!event answer "eventname" <y/n>
 
-        List<String> cmdArgs  = this.splitString(command);
+        String[] args = this.splitString(command).toArray(new String[]{});
 
-        //Test that command is being split properly.
-//        for ( String str : cmdArgs ) {
-//            System.out.println( str );
-//        }
-
-        switch ( cmdArgs.get(0) ) {
+        switch (args[0]) {
             case "!poll":
-                if ( cmdArgs.size() < 4 ) {
-                    System.out.println( "Invalid number of arguments" );
+                if (args.length < 4) {
+                    System.out.println("Invalid number of arguments");
                     break;
                 }
 
-                String pollName = cmdArgs.get(2);
+                String pollName = args[2];
 
-                switch ( cmdArgs.get(1) ) {
+                switch (args[1]) {
                     case "create":
-                        if ( cmdArgs.size() < 5 ) {
-                            System.out.println( "Invalid number of arguments" ); //Poll must have at least two options.
+                        if (args.length < 5) {
+                            System.out.println("Invalid number of arguments"); //Poll must have at least two options.
                             break;
                         }
-                        String[] answers = new String[ cmdArgs.size() - 3];
-                        for ( int i = 3; i < cmdArgs.size(); i++ ) {
-                            answers[i-3] = cmdArgs.get(i);
+                        String[] answers = new String[args.length - 3];
+                        for (int i = 3; i < args.length; i++) {
+                            answers[i - 3] = args[i];
                         }
                         createPoll(pollName, answers);
                         break;
 
                     case "edit":
-                        if ( cmdArgs.size() < 6 ) {
-                            System.out.println( "Invalid number of arguments" );
+                        if (args.length < 6) {
+                            System.out.println("Invalid number of arguments");
                             break;
                         }
-                        String newName = cmdArgs.get(3);
-                        String[] newAnswers = new String[ cmdArgs.size() - 4];
-                        for ( int i = 4; i < cmdArgs.size(); i++ ) {
-                            newAnswers[i-4] = cmdArgs.get(i);
+                        String newName = args[3];
+                        String[] newAnswers = new String[args.length - 4];
+                        for (int i = 4; i < args.length; i++) {
+                            newAnswers[i - 4] = args[i];
                         }
                         editPoll(pollName, newName, newAnswers);
                         break;
 
                     case "answer":
-                        String response = cmdArgs.get(3);
-                        answerPoll( pollName, response, user );
+                        String response = args[3];
+                        answerPoll(pollName, response, user);
                         break;
 
                     default:
@@ -94,40 +91,40 @@ public class Parser {
                 break;
 
             case "!event":
-                if ( cmdArgs.size() < 4 ) {
-                    System.out.println( "Invalid number of arguments" );
+                if (args.length < 4) {
+                    System.out.println("Invalid number of arguments");
                     break;
                 }
 
-                String eventName = cmdArgs.get(2);
+                String eventName = args[2];
 
-                switch ( cmdArgs.get(1) ) {
+                switch (args[1]) {
                     case "create":
-                        if ( cmdArgs.size() < 5 ) {
-                            System.out.println( "Invalid number of arguments" );
+                        if (args.length < 5) {
+                            System.out.println("Invalid number of arguments");
                             break;
                         }
-                        String location = cmdArgs.get(3);
-                        String time = cmdArgs.get(4);
-                        createEvent( eventName, location, time );
+                        String location = args[3];
+                        String time = args[4];
+                        createEvent(eventName, location, time);
                         break;
 
                     case "edit":
-                        if ( cmdArgs.size() < 6 ) {
-                            System.out.println( "Invalid number of arguments" );
+                        if (args.length < 6) {
+                            System.out.println("Invalid number of arguments");
                             break;
                         }
-                        String newEventName = cmdArgs.get(3);
-                        String newLocation = cmdArgs.get(4);
-                        String newTime = cmdArgs.get(5);
-                        editEvent( eventName, newEventName, newLocation, newTime);
+                        String newEventName = args[3];
+                        String newLocation = args[4];
+                        String newTime = args[5];
+                        editEvent(eventName, newEventName, newLocation, newTime);
                         break;
 
                     case "answer":
                         boolean isGoing;
-                        if ( cmdArgs.get(3).equalsIgnoreCase( "y" ) ) {
+                        if (args[3].equalsIgnoreCase("y")) {
                             isGoing = true;
-                        } else if ( cmdArgs.get(3).equalsIgnoreCase( "n" ) ) {
+                        } else if (args[3].equalsIgnoreCase("n")) {
                             isGoing = false;
                         } else {
                             System.out.println("Invalid argument.");
@@ -143,11 +140,13 @@ public class Parser {
                 break;
 
             case "!help":
-                if ( cmdArgs.size() == 1 ) {
-                    help( );
+                if (args.length == 1) {
+                    new CommandHelp().help(event);
+                    //help();
                 } else {
-                    String commandName = cmdArgs.get(1);
-                    help( commandName );
+                    String commandName = args[1];
+                    new CommandHelp().specificHelp(commandName, event);
+                    //help(commandName);
                 }
                 break;
 
@@ -164,7 +163,7 @@ public class Parser {
      * @param command The entire command received from the user
      * @return The command split into an array of arguments
      */
-    protected  String[] splitArguments(String command) {
+    protected String[] splitArguments(String command) {
         final List<String> args = new ArrayList<>();
         //trim, replace any whitespace with a single space, then split on quotation marks
         final String[] splitByQuotes = command.trim().replaceAll("\\s+", " ").split("\"");
