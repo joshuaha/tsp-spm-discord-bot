@@ -3,6 +3,7 @@ package bot;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import parse.MessageListener;
 
 import javax.security.auth.login.LoginException;
 import java.io.FileInputStream;
@@ -25,7 +26,7 @@ public class Main {
                     .setToken(token)
                     .addEventListener(messageListener)
                     .buildAsync();
-        } catch(LoginException ex) {
+        } catch (LoginException ex) {
             ex.printStackTrace();
         }
     }
