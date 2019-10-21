@@ -1,11 +1,8 @@
 package parse;
 
-import bot.DiscordPoll;
-import bot.TempData;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;

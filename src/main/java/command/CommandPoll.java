@@ -1,12 +1,15 @@
 package command;
 
-import bot.DiscordPoll;
-import bot.TempData;
+import factory.DaoFactory;
+import poll.DiscordPoll;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import poll.DiscordPollDao;
 
 import java.util.Arrays;
 
 public class CommandPoll implements Command {
+    private final DiscordPollDao pollDao  = DaoFactory.getDiscordPollDao();
+
     CommandPoll() {
 
     }
@@ -43,22 +46,21 @@ public class CommandPoll implements Command {
         final DiscordPoll poll = new DiscordPoll();
         poll.setName(name);
         poll.setOptions(Arrays.asList(options));
-        TempData.polls.put(poll.getName(), poll);
+        this.pollDao.createPoll(poll);
     }
 
     private void vote(String pollName, long user, int vote, MessageReceivedEvent event) {
-        final DiscordPoll poll = TempData.polls.get(pollName);
-        poll.setVote(user, vote);
+        this.pollDao.setVote(pollName, user, vote);
     }
 
     private void results(String pollName, MessageReceivedEvent event) {
-        final DiscordPoll poll = TempData.polls.get(pollName);
+        final DiscordPoll poll = this.pollDao.getPoll(pollName);
         final StringBuilder message = new StringBuilder();
         message.append(poll.getName()).append(System.lineSeparator());
-        for (int i = 0; i < poll.getOptions().size(); i++) {
-            message.append(poll.getOptions().get(i))
+        for (DiscordPoll.Option option : poll.getOptions()) {
+            message.append(option.getText())
                     .append(": ")
-                    .append(poll.getResults().get(i))
+                    .append(option.getVotes())
                     .append(System.lineSeparator());
         }
         //event.getMessage().delete().queue();
