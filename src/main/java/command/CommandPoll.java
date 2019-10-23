@@ -34,10 +34,10 @@ public class CommandPoll implements Command {
     public void execute(String[] args, MessageReceivedEvent event) {
         if ("create".equals(args[0])) {
 
-            final String pollName = args[1];
+            final String pollQuestion = args[1];
             final long owner = event.getAuthor().getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
-            this.create(pollName, owner, options);
+            this.create( owner, pollQuestion, options);
         } else if ("vote".equals(args[0])) {
 
             final String pollName = args[1];
@@ -57,7 +57,7 @@ public class CommandPoll implements Command {
             final String edit = args[2];
             if ( "name".equalsIgnoreCase( edit ) ) {
 
-                this.pollDao.getPoll( pollName ).setName( args[3] );
+                this.pollDao.getPoll( pollName ).setText( args[3] );
 
             } else if ( "option".equalsIgnoreCase( edit ) ) {
 
@@ -84,8 +84,8 @@ public class CommandPoll implements Command {
 
                     this.pollDao.getPoll( pollName ).setOptions( newOptions );
 
-                    event.getChannel().sendMessage( this.pollDao.getPoll( pollName).getName()
-                            + "'s options were updated." );
+                    event.getChannel().sendMessage(
+                            this.pollDao.getPoll( pollName).getText() + " Options were updated." );
                 }
 
                 //TODO - Edit existing option.
@@ -99,7 +99,7 @@ public class CommandPoll implements Command {
         }
     }
 
-    private void create(String name, long owner, String[] options) {
+    private void create(long owner, String question, String[] options ) {
         final DiscordPoll poll = new DiscordPoll();
         poll.setId(DiscordPoll.getUniqueId());
         poll.setOwner(owner);
