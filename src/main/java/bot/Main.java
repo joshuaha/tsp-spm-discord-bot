@@ -1,9 +1,5 @@
 package bot;
 
-import command.CommandEvent;
-import command.CommandHelp;
-import command.CommandPoll;
-import command.Commands;
 import factory.ServiceFactory;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
