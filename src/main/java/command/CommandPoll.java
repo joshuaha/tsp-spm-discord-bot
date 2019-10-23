@@ -1,16 +1,16 @@
 package command;
 
 import factory.ServiceFactory;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
-import poll.DiscordPollOld;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import poll.DiscordPollDao;
+import poll.DiscordPollOld;
 
 import java.util.Arrays;
 
 public class CommandPoll implements Command {
-    private final DiscordPollDao pollDao  = ServiceFactory.getDiscordPollDao();
+    private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
 
     CommandPoll() {
 
