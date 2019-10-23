@@ -10,6 +10,7 @@ public class DiscordPoll {
 
     private String id;
     private long owner;
+    private String text;
     private LocalDateTime openTime;
     private LocalDateTime closeTime;
 
@@ -36,6 +37,14 @@ public class DiscordPoll {
 
     public void setOwner(long owner) {
         this.owner = owner;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public LocalDateTime getOpenTime() {

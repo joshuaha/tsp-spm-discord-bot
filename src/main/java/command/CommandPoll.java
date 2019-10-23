@@ -1,6 +1,6 @@
 package command;
 
-import factory.DaoFactory;
+import factory.ServiceFactory;
 import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
 import poll.DiscordPollOld;
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CommandPoll implements Command {
-    private final DiscordPollDao pollDao  = DaoFactory.getDiscordPollDao();
+    private final DiscordPollDao pollDao  = ServiceFactory.getDiscordPollDao();
 
     CommandPoll() {
 
