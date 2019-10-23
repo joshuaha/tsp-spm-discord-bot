@@ -1,7 +1,9 @@
 package command;
 
 import factory.DaoFactory;
+import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
+import poll.DiscordPollOld;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import poll.DiscordPollDao;
 
@@ -29,8 +31,9 @@ public class CommandPoll implements Command {
     public void execute(String[] args, MessageReceivedEvent event) {
         if ("create".equals(args[0])) {
             final String pollName = args[1];
+            final long owner = event.getAuthor().getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
-            this.create(pollName, options);
+            this.create(pollName, owner, options);
         } else if ("vote".equals(args[0])) {
             final String pollName = args[1];
             final int vote = Integer.parseInt(args[2]) - 1;
@@ -42,11 +45,12 @@ public class CommandPoll implements Command {
         }
     }
 
-    private void create(String name, String[] options) {
+    private void create(String name, long owner, String[] options) {
         final DiscordPoll poll = new DiscordPoll();
-        poll.setName(name);
-        poll.setOptions(Arrays.asList(options));
-        this.pollDao.createPoll(poll);
+        poll.setId(DiscordPoll.getUniqueId());
+        poll.setOwner(owner);
+        poll.setOpenTime(LocalDateTime.now());
+        poll.setCloseTime(LocalDateTime.now().plusDays(1));
     }
 
     private void vote(String pollName, long user, int vote, MessageReceivedEvent event) {
@@ -54,10 +58,10 @@ public class CommandPoll implements Command {
     }
 
     private void results(String pollName, MessageReceivedEvent event) {
-        final DiscordPoll poll = this.pollDao.getPoll(pollName);
+        final DiscordPollOld poll = null;
         final StringBuilder message = new StringBuilder();
         message.append(poll.getName()).append(System.lineSeparator());
-        for (DiscordPoll.Option option : poll.getOptions()) {
+        for (DiscordPollOld.Option option : poll.getOptions()) {
             message.append(option.getText())
                     .append(": ")
                     .append(option.getVotes())
