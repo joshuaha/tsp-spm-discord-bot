@@ -2,12 +2,12 @@ package poll;
 
 public class DiscordPollDaoSql implements DiscordPollDao {
     @Override
-    public DiscordPoll getPoll(String pollName) {
+    public DiscordPollOld getPoll(String pollName) {
         return null;
     }
 
     @Override
-    public void createPoll(DiscordPoll poll) {
+    public void createPoll(DiscordPollOld poll) {
 
     }
 

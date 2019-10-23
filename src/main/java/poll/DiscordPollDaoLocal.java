@@ -19,7 +19,7 @@ public class DiscordPollDaoLocal implements DiscordPollDao {
      */
     @Override
     public void createPoll(DiscordPoll poll) {
-        POLLS.put(poll.getName(), poll);
+        POLLS.put(poll.getId(), poll);
     }
 
     /**
@@ -27,6 +27,6 @@ public class DiscordPollDaoLocal implements DiscordPollDao {
      */
     @Override
     public void setVote(String pollName, long user, int vote) {
-        POLLS.get(pollName).setVote(user, vote);
+        //POLLS_OLD.get(pollName).setVote(user, vote);
     }
 }
