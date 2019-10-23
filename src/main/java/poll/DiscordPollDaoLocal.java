@@ -18,8 +18,17 @@ public class DiscordPollDaoLocal implements DiscordPollDao {
      * {@inheritDoc}
      */
     @Override
-    public void createPoll(DiscordPoll poll) {
+    public boolean createPoll(DiscordPoll poll) {
         POLLS.put(poll.getId(), poll);
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean setOptions(String pollId, String[] options) {
+        return false;
     }
 
     /**

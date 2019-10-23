@@ -30,10 +30,14 @@ public class CommandPoll implements Command {
     @Override
     public void execute(String[] args, MessageReceivedEvent event) {
         if ("create".equals(args[0])) {
-            final String pollName = args[1];
+            final String text = args[1];
             final long owner = event.getAuthor().getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
-            this.create(pollName, owner, options);
+            if (this.create(owner, text, options)) {
+                event.getChannel().sendMessage("Poll created successfully.").queue();
+            } else {
+                event.getChannel().sendMessage("Unable to create poll.").queue();
+            }
         } else if ("vote".equals(args[0])) {
             final String pollName = args[1];
             final int vote = Integer.parseInt(args[2]) - 1;
@@ -45,12 +49,14 @@ public class CommandPoll implements Command {
         }
     }
 
-    private void create(String name, long owner, String[] options) {
+    private boolean create(long owner, String text, String[] options) {
         final DiscordPoll poll = new DiscordPoll();
         poll.setId(DiscordPoll.getUniqueId());
+        poll.setText(text);
         poll.setOwner(owner);
         poll.setOpenTime(LocalDateTime.now());
         poll.setCloseTime(LocalDateTime.now().plusDays(1));
+        return this.pollDao.createPoll(poll);
     }
 
     private void vote(String pollName, long user, int vote, MessageReceivedEvent event) {
