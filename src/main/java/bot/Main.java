@@ -1,9 +1,5 @@
 package bot;
 
-import command.CommandEvent;
-import command.CommandHelp;
-import command.CommandPoll;
-import command.Commands;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;

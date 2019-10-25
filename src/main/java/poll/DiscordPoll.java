@@ -1,78 +1,65 @@
 package poll;
 
-import java.util.*;
+import org.joda.time.LocalDateTime;
+
+import java.util.Random;
 
 public class DiscordPoll {
-    private String name;
-    private List<DiscordPoll.Option> options;
+    private static final int ID_LENGTH = 5;
+    private static final String ID_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    public String getName() {
-        return this.name;
+    private String id;
+    private long owner;
+    private String text;
+    private LocalDateTime openTime;
+    private LocalDateTime closeTime;
+
+    public static String getUniqueId() {
+        final Random random = new Random(System.currentTimeMillis());
+        final StringBuilder id = new StringBuilder();
+        for (int i = 0; i < ID_LENGTH; i++) {
+            id.append(ID_CHARS.charAt(random.nextInt(ID_CHARS.length())));
+        }
+        return id.toString();
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getId() {
+        return id;
     }
 
-    public List<DiscordPoll.Option> getOptions() {
-        return this.options != null
-                ? Collections.unmodifiableList(this.options)
-                : Collections.emptyList();
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setOptions(List<String> options) {
-        if (options != null) {
-            final List<DiscordPoll.Option> list = new ArrayList<>();
-            for (String optionText : options) {
-                final DiscordPoll.Option option = new DiscordPoll.Option();
-                option.setText(optionText);
-                list.add(option);
-            }
-            this.options = Collections.unmodifiableList(list);
-        }
-        else {
-            this.options = null;
-        }
+    public long getOwner() {
+        return owner;
     }
 
-    public void setVote(long user, int vote) {
-        this.removeVote(user);
-        this.options.get(vote).Vote(user);
+    public void setOwner(long owner) {
+        this.owner = owner;
     }
 
-    public void removeVote(long user) {
-        for (DiscordPoll.Option option : this.options) {
-            option.removeVote(user);
-        }
+    public String getText() {
+        return text;
     }
 
-    @Override
-    public String toString() {
-        return this.name;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public static class Option {
-        private String text;
-        private Set<Long> votes = new HashSet<>();
+    public LocalDateTime getOpenTime() {
+        return openTime;
+    }
 
-        public String getText() {
-            return this.text;
-        }
+    public void setOpenTime(LocalDateTime openTime) {
+        this.openTime = openTime;
+    }
 
-        public void setText(String text) {
-            this.text = text;
-        }
+    public LocalDateTime getCloseTime() {
+        return closeTime;
+    }
 
-        public int getVotes() {
-            return this.votes.size();
-        }
-
-        private void Vote(long user) {
-            this.votes.add(user);
-        }
-
-        private void removeVote(long user) {
-            this.votes.remove(user);
-        }
+    public void setCloseTime(LocalDateTime closeTime) {
+        this.closeTime = closeTime;
     }
 }

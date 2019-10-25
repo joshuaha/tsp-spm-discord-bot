@@ -1,14 +1,16 @@
 package command;
 
-import factory.DaoFactory;
-import poll.DiscordPoll;
+import factory.ServiceFactory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import org.joda.time.LocalDateTime;
+import poll.DiscordPoll;
 import poll.DiscordPollDao;
+import poll.DiscordPollOld;
 
 import java.util.Arrays;
 
 public class CommandPoll implements Command {
-    private final DiscordPollDao pollDao  = DaoFactory.getDiscordPollDao();
+    private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
 
     CommandPoll() {
 
@@ -28,9 +30,14 @@ public class CommandPoll implements Command {
     @Override
     public void execute(String[] args, MessageReceivedEvent event) {
         if ("create".equals(args[0])) {
-            final String pollName = args[1];
+            final String text = args[1];
+            final long owner = event.getAuthor().getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
-            this.create(pollName, options);
+            if (this.create(owner, text, options)) {
+                event.getChannel().sendMessage("Poll created successfully.").queue();
+            } else {
+                event.getChannel().sendMessage("Unable to create poll.").queue();
+            }
         } else if ("vote".equals(args[0])) {
             final String pollName = args[1];
             final int vote = Integer.parseInt(args[2]) - 1;
@@ -42,11 +49,14 @@ public class CommandPoll implements Command {
         }
     }
 
-    private void create(String name, String[] options) {
+    private boolean create(long owner, String text, String[] options) {
         final DiscordPoll poll = new DiscordPoll();
-        poll.setName(name);
-        poll.setOptions(Arrays.asList(options));
-        this.pollDao.createPoll(poll);
+        poll.setId(DiscordPoll.getUniqueId());
+        poll.setText(text);
+        poll.setOwner(owner);
+        poll.setOpenTime(LocalDateTime.now());
+        poll.setCloseTime(LocalDateTime.now().plusDays(1));
+        return this.pollDao.createPoll(poll);
     }
 
     private void vote(String pollName, long user, int vote, MessageReceivedEvent event) {
@@ -54,10 +64,10 @@ public class CommandPoll implements Command {
     }
 
     private void results(String pollName, MessageReceivedEvent event) {
-        final DiscordPoll poll = this.pollDao.getPoll(pollName);
+        final DiscordPollOld poll = null;
         final StringBuilder message = new StringBuilder();
         message.append(poll.getName()).append(System.lineSeparator());
-        for (DiscordPoll.Option option : poll.getOptions()) {
+        for (DiscordPollOld.Option option : poll.getOptions()) {
             message.append(option.getText())
                     .append(": ")
                     .append(option.getVotes())

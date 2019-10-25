@@ -10,13 +10,13 @@ import java.util.regex.Pattern;
 
 @Deprecated
 public class Parser {
-    public static void main(String[] args) {
-
-        //Testing the parser
-        //Parser parser = new Parser();
-        //parser.parse("!poll create name \"answer name\" ans2", 0);
-
-    }
+//    public static void main(String[] args) {
+//
+//        //Testing the parser
+//        Parser parser = new Parser();
+//        parser.parse( "!poll create name \"answer name\" ans2", 0 );
+//
+//    }
 
     public String[] splitString(String command) {
         List<String> split = new ArrayList<>();
@@ -157,6 +157,8 @@ public class Parser {
      * Splits a command containing arguments separated by whitespace and quotations and splits
      * it into an array of arguments.
      *
+     * Currently using the ArrayList method instead.
+     *
      * @param command The entire command received from the user
      * @return The command split into an array of arguments
      */
@@ -176,6 +178,8 @@ public class Parser {
         //convert array list to array of arguments
         return args.toArray(new String[]{});
     }
+
+    //The following methods will be moved to their own class.
 
     public void createPoll(String pollName, String[] responses) {
         System.out.println("Called create poll.");
