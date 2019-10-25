@@ -1,7 +1,7 @@
-event create "eventname" "location" "dateTime"
+**event create "eventname" "location" "dateTime"**
 The event create command will create a new event by listing the name of the event, the location of the event, and the date and time of the event. People will be able to answer whether or not they are going to this event.
 
-event answer "eventname" <y/n>
+**event answer "eventname" <y/n>**
 The event answer command allows people to decide on whether ot not they are going to an existing event by specifying the event name as well as 'y' for yes, or 'n' for no. 'y' means that this person is going to the event and 'n' means that this person is not going to the event. If a person does not answer an event, they will remain in a "pending" group until they answer.
 
-*Note that whatever appears in quotation marks needs to also be specified within quotation marks when calling the command.
+**Note that whatever appears in quotation marks needs to also be specified within quotation marks when calling the command.**

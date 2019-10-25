@@ -27,7 +27,10 @@ public class CommandHelp implements Command {
      */
     @Override
     public void execute(String[] args, MessageReceivedEvent event) {
-        event.getChannel().sendMessage(this.getHelpMessage()).queue();
+        if(args.length > 0 && (args[0].equals("poll") || args[0].equals("event")))
+            event.getChannel().sendMessage(this.specificHelp(args[0])).queue();
+        else
+            event.getChannel().sendMessage(this.getHelpMessage()).queue();
     }
 
     /**
@@ -67,7 +70,7 @@ public class CommandHelp implements Command {
                 in.close();
                 return message.toString();
             } else if (command.equals("event")) {
-                final URL resource = this.getClass().getClassLoader().getResource("EventOutputHelp.txt");
+                final URL resource = this.getClass().getClassLoader().getResource("EventHelpOutput.txt");
                 final File file = resource == null ? new File("") : new File(resource.toURI());
                 final Scanner in = new Scanner(file);
                 final StringBuilder message = new StringBuilder();
