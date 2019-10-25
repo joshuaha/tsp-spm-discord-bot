@@ -1,17 +1,20 @@
-poll create "pollname" "answer 1" "answer 2" ...
+**poll create "pollname" "answer 1" "answer 2" ...**
 The poll create command will create a poll for members of the server to answer. The poll will have the specified poll name and answers.
 
-poll edit "pollname" "newname" "new answer 1" "new answer 2" ...
-The poll edit commnad will allow you to edit an existing poll. Access the existing poll by specifying the current poll name and then list the new poll name as well as the new answers. This command will reset everyone's answers to the exisitng poll.
+**poll edit "pollname" name "new name"**
+The poll edit name command will allow you to rename an existing poll. Access the exisitng poll by specifying the name of the poll, and rename it by specifying the new name for the poll.
 
-poll vote "pollname" "answer"
-The poll vote command allows people to answer an existing poll by specifying the name of the existing poll as well as the name of the answer that they would like to vote for.
+**poll edit "pollname" option "index" "new option"**
+The poll edit option commnad will allow you to edit an option of an existing poll. Access the existing poll option by specifying the poll name and the index of the desired option to edit. Then you can rename an exisitng option, or add a new option by specifying an index greater than the last index. __**Note that this command will reset all votes for the poll.**__
 
-event create "eventname" "location" "dateTime"
+**poll vote "pollname" "option index"**
+The poll vote command allows people to answer an existing poll by specifying the name of the existing poll as well as the index of the option that they would like to vote for.
+
+**event create "eventname" "location" "dateTime"**
 The event create command will create a new event by listing the name of the event, the location of the event, and the date and time of the event. People will be able to answer whether or not they are going to this event.
 
-event answer "eventname" <y/n>
+**event answer "eventname" <y/n>**
 The event answer command allows people to decide on whether ot not they are going to an existing event by specifying the event name as well as 'y' for yes, or 'n' for no. 'y' means that this person is going to the event and 'n' means that this person is not going to the event. If a person does not answer an event, they will remain in a "pending" group until they answer.
 
-*Note that whatever appears in quotation marks needs to also be specified within quotation marks when calling the command.
+**Note that whatever appears in quotation marks needs to also be specified within quotation marks when calling the command.**
 
