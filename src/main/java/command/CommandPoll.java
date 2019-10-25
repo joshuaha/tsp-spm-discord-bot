@@ -7,7 +7,12 @@ import poll.DiscordPoll;
 import poll.DiscordPollDao;
 import poll.DiscordPollOld;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringBufferInputStream;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class CommandPoll implements Command {
     private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
@@ -56,7 +61,7 @@ public class CommandPoll implements Command {
         poll.setOwner(owner);
         poll.setOpenTime(LocalDateTime.now());
         poll.setCloseTime(LocalDateTime.now().plusDays(1));
-        return this.pollDao.createPoll(poll);
+        return this.pollDao.createPoll(poll) && this.pollDao.setOptions(poll.getId(), Arrays.asList(options));
     }
 
     private void vote(String pollName, long user, int vote, MessageReceivedEvent event) {

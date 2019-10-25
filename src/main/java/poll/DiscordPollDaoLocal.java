@@ -1,17 +1,17 @@
 package poll;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class DiscordPollDaoLocal implements DiscordPollDao {
-    private static final Map<String, DiscordPoll> POLLS = new HashMap<>();
-
     /**
      * {@inheritDoc}
      */
     @Override
     public DiscordPoll getPoll(String pollName) {
-        return POLLS.get(pollName);
+        return null;
     }
 
     /**
@@ -19,7 +19,6 @@ public class DiscordPollDaoLocal implements DiscordPollDao {
      */
     @Override
     public boolean createPoll(DiscordPoll poll) {
-        POLLS.put(poll.getId(), poll);
         return false;
     }
 
@@ -27,7 +26,7 @@ public class DiscordPollDaoLocal implements DiscordPollDao {
      * {@inheritDoc}
      */
     @Override
-    public boolean setOptions(String pollId, String[] options) {
+    public boolean setOptions(String pollId, List<String> options) {
         return false;
     }
 
@@ -36,6 +35,6 @@ public class DiscordPollDaoLocal implements DiscordPollDao {
      */
     @Override
     public void setVote(String pollName, long user, int vote) {
-        //POLLS_OLD.get(pollName).setVote(user, vote);
+
     }
 }
