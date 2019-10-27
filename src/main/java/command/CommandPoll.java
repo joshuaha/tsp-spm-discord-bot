@@ -1,19 +1,19 @@
 package command;
 
 import factory.ServiceFactory;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
-import poll.DiscordPollOld;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import poll.DiscordPollDao;
 import poll.DiscordPollDaoSql;
+import poll.DiscordPollOld;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class CommandPoll implements Command {
-    private final DiscordPollDao pollDao  = ServiceFactory.getDiscordPollDao();
+    private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
 
     CommandPoll() {
 
@@ -64,6 +64,7 @@ public class CommandPoll implements Command {
                 int optionIndex = Integer.parseInt( args[3] );
                 final String newOption = args[4];
 
+                //TODO - Fix options to new version of options.
                 if ( optionIndex > this.pollDao.getPoll(pollName).getOptions().size() ) {
 
                     if ( optionIndex > Integer.MAX_VALUE ) optionIndex = Integer.MAX_VALUE;
@@ -75,7 +76,7 @@ public class CommandPoll implements Command {
                         return;
                     }
 
-                    List<DiscordPoll.Option> options = this.pollDao.getPoll( pollName ).getOptions();
+                    List< DiscordPoll.Option > options = this.pollDao.getPoll( pollName ).getOptions();
                     List<String> newOptions = new ArrayList<>();
                     for (DiscordPoll.Option o : options ) {
                         newOptions.add( o.getText() );
