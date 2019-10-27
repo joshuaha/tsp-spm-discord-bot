@@ -1,10 +1,13 @@
-poll create "pollname" "answer 1" "answer 2" ...
+**poll create "pollname" "answer 1" "answer 2" ...**
 The poll create command will create a poll for members of the server to answer. The poll will have the specified poll name and answers.
 
-poll edit "pollname" "newname" "new answer 1" "new answer 2" ...
-The poll edit commnad will allow you to edit an existing poll. Access the existing poll by specifying the current poll name and then list the new poll name as well as the new answers. This command will reset everyone's answers to the exisitng poll.
+**poll edit "pollname" name "new name"**
+The poll edit name command will allow you to rename an existing poll. Access the exisitng poll by specifying the name of the poll, and rename it by specifying the new name for the poll.
 
-poll answer "pollname" "answer"
+**poll edit "pollname" option "index" "new option"**
+The poll edit option commnad will allow you to edit an option of an existing poll. Access the existing poll option by specifying the poll name and the index of the desired option to edit. Then you can rename an exisitng option, or add a new option by specifying an index greater than the last index. __**Note that this command will reset all votes for the poll.**__
+
+**poll answer "pollname" "answer"**
 The poll answer command allows people to answer an existing poll by specifying the name of the existing poll as well as the name of the answer that they would like to vote for.
 
-*Note that whatever appears in quotation marks needs to also be specified within quotation marks when calling the command.
+**Note that whatever appears in quotation marks needs to also be specified within quotation marks when calling the command.**

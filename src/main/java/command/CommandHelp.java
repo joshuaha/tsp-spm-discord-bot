@@ -27,7 +27,10 @@ public class CommandHelp implements Command {
      */
     @Override
     public void execute(String[] args, MessageReceivedEvent event) {
-        event.getChannel().sendMessage(this.getHelpMessage()).queue();
+        if(args.length > 0 && (args[0].equals("poll") || args[0].equals("event")))
+            event.getChannel().sendMessage(this.specificHelp(args[0])).queue();
+        else
+            event.getChannel().sendMessage(this.getHelpMessage()).queue();
     }
 
     /**
@@ -51,31 +54,38 @@ public class CommandHelp implements Command {
     }
 
     /**
-     * Sends the message for the !help event or !help poll command to the channel that it was called in
-     *
+     * Retrieves the message displayed then the Poll Help or Event Help commands are called.
      * @param command specifies whether to print help for the event commands or the poll commands
-     * @param event   the event representing the help command being called
      */
-    public void specificHelp(String command, MessageReceivedEvent event) {
+    public String specificHelp(String command) {
         try {
             if (command.equals("poll")) {
-                File pollOutput = new File("PollHelpOutput.txt");
-                Scanner scan = new Scanner(pollOutput);
-
-                while (scan.hasNextLine()) {
-                    event.getChannel().sendMessage(scan.nextLine()).queue();
+                final URL resource = this.getClass().getClassLoader().getResource("PollHelpOutput.txt");
+                final File file = resource == null ? new File("") : new File(resource.toURI());
+                final Scanner in = new Scanner(file);
+                final StringBuilder message = new StringBuilder();
+                while (in.hasNextLine()) {
+                    message.append(in.nextLine()).append(System.lineSeparator());
                 }
+                in.close();
+                return message.toString();
             } else if (command.equals("event")) {
-                File eventOutput = new File("EventHelpOutput.txt");
-                Scanner scan = new Scanner(eventOutput);
-
-                while (scan.hasNextLine()) {
-                    event.getChannel().sendMessage(scan.nextLine()).queue();
+                final URL resource = this.getClass().getClassLoader().getResource("EventHelpOutput.txt");
+                final File file = resource == null ? new File("") : new File(resource.toURI());
+                final Scanner in = new Scanner(file);
+                final StringBuilder message = new StringBuilder();
+                while (in.hasNextLine()) {
+                    message.append(in.nextLine()).append(System.lineSeparator());
                 }
+                in.close();
+                return message.toString();
             }
-        } catch (FileNotFoundException ex) {
-            event.getChannel().sendMessage("Help information missing!").queue();
+            else {
+                return "Invalid Help Command";
+            }
+        } catch (FileNotFoundException| URISyntaxException ex) {
             ex.printStackTrace();
+            return "Help information missing!";
         }
     }
 }

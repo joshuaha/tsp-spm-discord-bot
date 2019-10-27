@@ -12,6 +12,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// TODO - Remove? From merge conflict
+//import java.io.ByteArrayInputStream;
+//import java.io.IOException;
+//import java.io.InputStream;
+//import java.io.StringBufferInputStream;
+//import java.util.Arrays;
+//import java.util.Scanner;
+
 public class CommandPoll implements Command {
     private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
 
@@ -34,10 +42,15 @@ public class CommandPoll implements Command {
     public void execute(String[] args, MessageReceivedEvent event) {
         if ("create".equals(args[0])) {
 
-            final String pollQuestion = args[1];
+            final String text = args[1];
             final long owner = event.getAuthor().getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
-            this.create( owner, pollQuestion, options);
+            if (this.create(owner, text, options)) {
+                event.getChannel().sendMessage("Poll created successfully.").queue();
+            } else {
+                event.getChannel().sendMessage("Unable to create poll.").queue();
+            }
+
         } else if ("vote".equals(args[0])) {
 
             final String pollName = args[1];
@@ -100,12 +113,14 @@ public class CommandPoll implements Command {
         }
     }
 
-    private void create(long owner, String question, String[] options ) {
+    private boolean create(long owner, String text, String[] options) {
         final DiscordPoll poll = new DiscordPoll();
         poll.setId(DiscordPoll.getUniqueId());
+        poll.setText(text);
         poll.setOwner(owner);
         poll.setOpenTime(LocalDateTime.now());
         poll.setCloseTime(LocalDateTime.now().plusDays(1));
+        return this.pollDao.createPoll(poll) && this.pollDao.setOptions(poll.getId(), Arrays.asList(options));
     }
 
     private void vote(String pollName, long user, int vote, MessageReceivedEvent event) {
