@@ -78,7 +78,7 @@ public class CommandPoll implements Command {
                 final String newOption = args[4];
 
                 //TODO - Fix options to new version of options.
-                if ( optionIndex > this.pollDao.getPoll(pollName).getOptions().size() ) {
+                if ( false /*optionIndex > this.pollDao.getPoll(pollName).getOptions().size()*/ ) {
 
                     if ( optionIndex > Integer.MAX_VALUE ) optionIndex = Integer.MAX_VALUE;
                     if ( optionIndex <= 0 ) {
@@ -89,6 +89,7 @@ public class CommandPoll implements Command {
                         return;
                     }
 
+                    /*
                     List< DiscordPoll.Option > options = this.pollDao.getPoll( pollName ).getOptions();
                     List<String> newOptions = new ArrayList<>();
                     for (DiscordPoll.Option o : options ) {
@@ -98,8 +99,9 @@ public class CommandPoll implements Command {
 
                     this.pollDao.getPoll( pollName ).setOptions( newOptions );
 
-                    event.getChannel().sendMessage(
-                            this.pollDao.getPoll( pollName).getText() + " Options were updated." );
+                    event.getChannel().sendMessage( "Options were updated for "
+                            this.pollDao.getPoll( pollName).getText() + " Poll results have been reset. );
+                    */
                 }
 
                 //TODO - Edit existing option.
