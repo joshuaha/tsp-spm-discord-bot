@@ -22,7 +22,7 @@ public class TestingBot {
     /**
      * @return whether the test passed or failed.
      */
-    public boolean checkExpectedOutput( MessageReceivedEvent event ) {
+    public boolean checkOutput( MessageReceivedEvent event ) {
         boolean testPass = false;
 
         String expected = "";
