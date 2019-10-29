@@ -7,6 +7,7 @@ import java.util.Random;
 public class DiscordPoll {
     private static final int ID_LENGTH = 5;
     private static final String ID_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final Random RNG = new Random();
 
     private String id;
     private long owner;
@@ -15,10 +16,9 @@ public class DiscordPoll {
     private LocalDateTime closeTime;
 
     public static String getUniqueId() {
-        final Random random = new Random(System.currentTimeMillis());
         final StringBuilder id = new StringBuilder();
         for (int i = 0; i < ID_LENGTH; i++) {
-            id.append(ID_CHARS.charAt(random.nextInt(ID_CHARS.length())));
+            id.append(ID_CHARS.charAt(RNG.nextInt(ID_CHARS.length())));
         }
         return id.toString();
     }
