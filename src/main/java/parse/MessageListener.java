@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,9 +20,11 @@ public class MessageListener extends ListenerAdapter {
      */
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (!event.getAuthor().isBot()) {
-            if (event.getMessage().getContentRaw().startsWith(IDENTIFIER)) {
-                final String input = event.getMessage().getContentRaw().substring(IDENTIFIER.length());
+        final Scanner in = new Scanner(event.getMessage().getContentRaw());
+        while(in.hasNextLine()) {
+            final String line = in.nextLine();
+            if (line.startsWith(IDENTIFIER)) {
+                final String input = line.substring(IDENTIFIER.length());
                 final String[] split = input.split("\\s+", 2);
                 final String alias = split.length >= 1 ? split[0] : null;
                 final String[] args = this.splitArguments(split.length == 2 ? split[1] : null);
