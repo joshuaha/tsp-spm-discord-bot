@@ -6,12 +6,13 @@ import org.joda.time.LocalDateTime;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DiscordPollDaoSql implements DiscordPollDao {
     private final DatabaseService databaseService = ServiceFactory.getDatabaseService();
+    private static final String SQL_GET_POLL = "SELECT * FROM POLL WHERE ID = ?";
     private static final String SQL_CREATE_POLL = "INSERT INTO POLL (ID, OWNER, TEXT, OPEN_TIME, CLOSE_TIME) values (?, ?, ?, ?, ?)";
     private static final String SQL_SET_OPTIONS = "INSERT INTO OPTIONS (POLL_ID, ID, TEXT) VALUES (?, ?, ?)";
 
@@ -20,7 +21,25 @@ public class DiscordPollDaoSql implements DiscordPollDao {
      */
     @Override
     public DiscordPoll getPoll(String pollId) {
-        return null;
+        try {
+            final Connection conn = this.databaseService.getDatabaseConnection();
+            final PreparedStatement stmt = conn.prepareStatement(SQL_GET_POLL);
+            stmt.setString(1, pollId);
+            stmt.execute();
+            final ResultSet set = stmt.getResultSet();
+            final DiscordPoll poll = new DiscordPoll();
+            poll.setId(set.getString("ID"));
+            poll.setOwner(set.getLong("OWNER"));
+            poll.setText(set.getString("TEXT"));
+            poll.setOpenTime(LocalDateTime.parse(set.getString("OPEN_TIME")));
+            poll.setCloseTime(LocalDateTime.parse(set.getString("CLOSE_TIME")));
+            stmt.close();
+            conn.close();
+            return poll;
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -65,6 +84,7 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             conn.close();
             return true;
         } catch (SQLException ex) {
+            ex.printStackTrace();
             return false;
         }
     }
