@@ -28,15 +28,17 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             stmt.execute();
             final ResultSet set = stmt.getResultSet();
             final DiscordPoll poll = new DiscordPoll();
+            set.next();
             poll.setId(set.getString("ID"));
             poll.setOwner(set.getLong("OWNER"));
             poll.setText(set.getString("TEXT"));
-            poll.setOpenTime(LocalDateTime.parse(set.getString("OPEN_TIME")));
-            poll.setCloseTime(LocalDateTime.parse(set.getString("CLOSE_TIME")));
+            poll.setOpenTime(new LocalDateTime(set.getTimestamp("OPEN_TIME")));
+            poll.setCloseTime(new LocalDateTime(set.getTimestamp("CLOSE_TIME")));
+            set.close();
             stmt.close();
             conn.close();
             return poll;
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             ex.printStackTrace();
             return null;
         }
