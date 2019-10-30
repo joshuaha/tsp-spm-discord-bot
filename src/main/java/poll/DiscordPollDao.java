@@ -6,5 +6,6 @@ public interface DiscordPollDao {
     DiscordPoll getPoll(String pollId);
     boolean createPoll(DiscordPoll poll);
     boolean setOptions(String pollId, List<String> options);
-    public void setVote(String pollId, long user, int option);
+    boolean setVote(long user, String pollId, int optionId);
+    int getVotes(String pollId, int optionId);
 }

@@ -5,12 +5,9 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
-import poll.DiscordPollDaoSql;
 import poll.DiscordPollOld;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 // TODO - Remove? From merge conflict
 //import java.io.ByteArrayInputStream;
@@ -125,8 +122,8 @@ public class CommandPoll implements Command {
         return this.pollDao.createPoll(poll) && this.pollDao.setOptions(poll.getId(), Arrays.asList(options));
     }
 
-    private void vote(String pollName, long user, int vote, MessageReceivedEvent event) {
-        this.pollDao.setVote(pollName, user, vote);
+    private boolean vote(String pollName, long user, int vote, MessageReceivedEvent event) {
+        return this.pollDao.setVote(user, pollName, vote);
     }
 
     private void results(String pollName, MessageReceivedEvent event) {

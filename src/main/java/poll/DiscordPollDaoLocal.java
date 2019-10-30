@@ -1,8 +1,6 @@
 package poll;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Deprecated
 public class DiscordPollDaoLocal implements DiscordPollDao {
@@ -32,9 +30,21 @@ public class DiscordPollDaoLocal implements DiscordPollDao {
 
     /**
      * {@inheritDoc}
+     *
+     * @return
      */
     @Override
-    public void setVote(String pollName, long user, int vote) {
+    public boolean setVote(long user, String pollName, int vote) {
+        return false;
+    }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     */
+    @Override
+    public int getVotes(String pollId, int optionId) {
+        return 0;
     }
 }
