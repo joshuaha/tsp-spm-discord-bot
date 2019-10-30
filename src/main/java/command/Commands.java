@@ -22,6 +22,7 @@ public class Commands {
         this.registerCommand(new CommandHelp());
         this.registerCommand(new CommandPoll());
         this.registerCommand(new CommandEvent());
+        this.registerCommand(new CommandTest());
     }
 
     public void registerCommand(Command command) {
