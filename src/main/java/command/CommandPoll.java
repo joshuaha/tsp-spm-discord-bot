@@ -42,11 +42,13 @@ public class CommandPoll implements Command {
     public void execute(String[] args, MessageReceivedEvent event) {
         if ("create".equals(args[0])) {
 
+            String pollID = DiscordPoll.getUniqueId();
             final String text = args[1];
             final long owner = event.getAuthor().getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
-            if (this.create(owner, text, options)) {
+            if (this.create(owner, text, options, pollID)) {
                 event.getChannel().sendMessage("Poll created successfully.").queue();
+                event.getChannel().sendMessage("Your Poll ID is " + pollID).queue();
             } else {
                 event.getChannel().sendMessage("Unable to create poll.").queue();
             }
@@ -115,9 +117,9 @@ public class CommandPoll implements Command {
         }
     }
 
-    private boolean create(long owner, String text, String[] options) {
+    private boolean create(long owner, String text, String[] options, String pollID) {
         final DiscordPoll poll = new DiscordPoll();
-        poll.setId(DiscordPoll.getUniqueId());
+        poll.setId(pollID);
         poll.setText(text);
         poll.setOwner(owner);
         poll.setOpenTime(LocalDateTime.now());
