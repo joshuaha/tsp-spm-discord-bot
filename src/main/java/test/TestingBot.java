@@ -9,7 +9,6 @@ public class TestingBot {
 
     public void sendTestStrings( MessageReceivedEvent event ) {
         final StringBuilder message = new StringBuilder();
-        //TODO - Sawyer put in your commands
         message.append( "!poll create \"NoArgs\" \n" );
         message.append( "!poll create \"\" \"\" \n" );
         message.append( "!poll create NoQuotes Ans1 \n" );
@@ -24,7 +23,7 @@ public class TestingBot {
         message.append( "!help help \n" );
 
 
-        event.getChannel().sendMessage( message );
+        event.getChannel().sendMessage( message ).queue();
     }
 
     /**
