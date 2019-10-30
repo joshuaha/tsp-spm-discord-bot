@@ -10,11 +10,19 @@ public class TestingBot {
     public void sendTestStrings( MessageReceivedEvent event ) {
         final StringBuilder message = new StringBuilder();
         //TODO - Sawyer put in your commands
-        message.append( "Command 1 \n" );
-        message.append( "Command 2 \n" );
-        message.append( "Command 3 \n" );
-        message.append( "Command 4 \n" );
-        message.append( "Command 5 \n" );
+        message.append( "!poll create \"NoArgs\" \n" );
+        message.append( "!poll create \"\" \"\" \n" );
+        message.append( "!poll create NoQuotes Ans1 \n" );
+        message.append( "!poll create \n" );
+        message.append( "!poll \n" );
+        message.append( "!poll create \"PassPoll\" \"Ans1\" \"Ans2\" \n" );
+        message.append( "!help \"\" \n" );
+        message.append( "!help notpoll \n" );
+        message.append( "!help \n" );
+        message.append( "!help poll \n" );
+        message.append( "!help event \n" );
+        message.append( "!help help \n" );
+
 
         event.getChannel().sendMessage( message );
     }
