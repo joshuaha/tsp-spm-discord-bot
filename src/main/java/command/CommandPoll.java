@@ -99,8 +99,8 @@ public class CommandPoll implements Command {
 
                     this.pollDao.getPoll( pollName ).setOptions( newOptions );
 
-                    event.getChannel().sendMessage( "Options were updated for "
-                            this.pollDao.getPoll( pollName).getText() + " Poll results have been reset. );
+                    event.getChannel().sendMessage( "Options were updated for " +
+                            this.pollDao.getPoll( pollName).getText() + " Poll results have been reset." );
                     */
                 }
 
