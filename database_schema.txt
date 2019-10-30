@@ -1,0 +1,23 @@
+create table POLL ( 
+	ID char(5) primary key, 
+	OWNER bigint not null, 
+	TEXT varchar(128), 
+	OPEN_TIME datetime not null, 
+	CLOSE_TIME datetime not null
+);
+
+create table OPTIONS (
+	POLL_ID char(5),
+	ID tinyint,
+	TEXT varchar(128),
+	primary key (POLL_ID, ID),
+	foreign key (POLL_ID) references POLL (ID)
+);
+
+create table VOTES (
+	USER bigint,
+	POLL_ID char(5),
+	OPTION_ID tinyint,
+	primary key (USER, POLL_ID),
+	foreign key (POLL_ID, OPTION_ID) references OPTIONS (POLL_ID, ID)
+);
