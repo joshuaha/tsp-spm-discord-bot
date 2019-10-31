@@ -45,7 +45,11 @@ public class CommandPoll implements Command {
             final String text = args[1];
             final long owner = event.getAuthor().getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
-            if (this.create(owner, text, options)) {
+
+            //TODO - Don't allow empty string options.
+            if ( options.length < 1 || text.isEmpty() ) {
+                event.getChannel().sendMessage("Unable to create poll.").queue();
+            } else if ( this.create( owner, text, options ) ) {
                 event.getChannel().sendMessage("Poll created successfully.").queue();
             } else {
                 event.getChannel().sendMessage("Unable to create poll.").queue();
