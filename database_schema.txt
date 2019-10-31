@@ -1,23 +1,26 @@
-create table POLL ( 
-	ID char(5) primary key, 
-	OWNER bigint not null, 
-	TEXT varchar(128), 
-	OPEN_TIME datetime not null, 
-	CLOSE_TIME datetime not null
+CREATE TABLE POLL ( 
+	ID CHAR(5) PRIMARY KEY, 
+	OWNER BIGINT NOT NULL, 
+	TEXT VARCHAR(128), 
+	OPEN_TIME DATETIME NOT NULL, 
+	CLOSE_TIME DATETIME NOT NULL,
+	UNIQUE INDEX ID (ID)
 );
 
-create table OPTIONS (
-	POLL_ID char(5),
-	ID tinyint,
-	TEXT varchar(128),
-	primary key (POLL_ID, ID),
-	foreign key (POLL_ID) references POLL (ID)
+CREATE TABLE OPTIONS (
+	POLL_ID CHAR(5),
+	ID TINYINT,
+	TEXT VARCHAR(128),
+	PRIMARY KEY (POLL_ID, ID),
+	FOREIGN KEY (POLL_ID) REFERENCES POLL (ID),
+	UNIQUE INDEX ID (POLL_ID, ID)
 );
 
-create table VOTES (
-	USER bigint,
-	POLL_ID char(5),
-	OPTION_ID tinyint,
-	primary key (USER, POLL_ID),
-	foreign key (POLL_ID, OPTION_ID) references OPTIONS (POLL_ID, ID)
+CREATE TABLE VOTES (
+	USER_ID BIGINT,
+	POLL_ID CHAR(5),
+	OPTION_ID TINYINT,
+	PRIMARY KEY (USER_ID, POLL_ID),
+	FOREIGN KEY (POLL_ID, OPTION_ID) REFERENCES OPTIONS (POLL_ID, ID),
+	UNIQUE INDEX ID (USER_ID, POLL_ID)
 );

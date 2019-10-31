@@ -9,7 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class DiscordPollDaoSql implements DiscordPollDao {
     private static final String SQL_GET_OPTIONS = "SELECT * FROM OPTIONS WHERE POLL_ID = ?";
     private static final String SQL_SET_OPTIONS = "INSERT INTO OPTIONS (POLL_ID, ID, TEXT) VALUES (?, ?, ?)";
     private static final String SQL_GET_VOTES = "SELECT COUNT(*) AS VOTES FROM VOTES WHERE POLL_ID = ? AND OPTION_ID = ?";
-    private static final String SQL_SET_VOTE = "INSERT INTO VOTES (USER, POLL_ID, OPTION_ID) VALUES (?, ?, ?)";
+    private static final String SQL_SET_VOTE = "INSERT INTO VOTES (USER_ID, POLL_ID, OPTION_ID) VALUES (?, ?, ?)";
     private final DatabaseService databaseService = ServiceFactory.getDatabaseService();
 
     /**
@@ -158,11 +157,11 @@ public class DiscordPollDaoSql implements DiscordPollDao {
      * {@inheritDoc}
      */
     @Override
-    public boolean setVote(long user, String pollId, int optionId) {
+    public boolean setVote(long userId, String pollId, int optionId) {
         try {
             final Connection conn = this.databaseService.getDatabaseConnection();
             final PreparedStatement stmt = conn.prepareStatement(SQL_SET_VOTE);
-            stmt.setLong(1, user);
+            stmt.setLong(1, userId);
             stmt.setString(2, pollId);
             stmt.setInt(3, optionId);
             stmt.execute();

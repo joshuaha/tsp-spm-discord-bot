@@ -11,14 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-// TODO - Remove? From merge conflict
-//import java.io.ByteArrayInputStream;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.io.StringBufferInputStream;
-//import java.util.Arrays;
-//import java.util.Scanner;
-
 public class CommandPoll implements Command {
     private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
 
@@ -65,8 +57,8 @@ public class CommandPoll implements Command {
 
             final String pollName = args[1];
             final int vote = Integer.parseInt(args[2]) - 1;
-            final long user = event.getAuthor().getIdLong();
-            this.setVote(pollName, user, vote, event);
+            final long userId = event.getAuthor().getIdLong();
+            this.setVote(pollName, userId, vote, event);
             //TODO - Let user know vote is index not name of option.
 
         } else if ("results".equals(args[0])) {
@@ -135,8 +127,8 @@ public class CommandPoll implements Command {
         return this.pollDao.createPoll(poll) && this.pollDao.setOptions(poll.getId(), Arrays.asList(options));
     }
 
-    private boolean setVote(String pollName, long user, int vote, MessageReceivedEvent event) {
-        return this.pollDao.setVote(user, pollName, vote);
+    private boolean setVote(String pollName, long userId, int vote, MessageReceivedEvent event) {
+        return this.pollDao.setVote(userId, pollName, vote);
     }
 
     private void getResults(String pollId, MessageReceivedEvent event) {
