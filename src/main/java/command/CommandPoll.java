@@ -1,16 +1,14 @@
 package command;
 
+import com.mysql.jdbc.StringUtils;
 import factory.ServiceFactory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
-import poll.DiscordPollDaoSql;
 import poll.DiscordPollOld;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 // TODO - Remove? From merge conflict
 //import java.io.ByteArrayInputStream;
@@ -40,19 +38,27 @@ public class CommandPoll implements Command {
      */
     @Override
     public void execute(String[] args, MessageReceivedEvent event) {
-        if ("create".equals(args[0])) {
+        if ( args.length == 0 ) {
+            event.getChannel().sendMessage("Invalid command. Type \"!help\" for help." ).queue();
+            return;
+        }
 
+        if ("create".equals(args[0]) && args.length > 1 ) {
+            //args.length > 1 is to check that "!poll create" wasn't the only thing entered.
+
+            String pollID = DiscordPoll.getUniqueId();
             final String text = args[1];
             final long owner = event.getAuthor().getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
 
             //TODO - Don't allow empty string options.
-            if ( options.length < 1 || text.isEmpty() ) {
-                event.getChannel().sendMessage("Unable to create poll.").queue();
-            } else if ( this.create( owner, text, options ) ) {
+            if ( options.length < 1 || StringUtils.isEmptyOrWhitespaceOnly( text ) ) {
+                event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
+            } else if ( this.create( owner, text, options, pollID ) ) {
                 event.getChannel().sendMessage("Poll created successfully.").queue();
+                event.getChannel().sendMessage("Your Poll ID is " + pollID + ".").queue();
             } else {
-                event.getChannel().sendMessage("Unable to create poll.").queue();
+                event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
             }
 
         } else if ("vote".equals(args[0])) {
@@ -114,14 +120,14 @@ public class CommandPoll implements Command {
             }
 
         } else {
-            //TODO - Send message saying invalid command and give them help.
+            event.getChannel().sendMessage("Invalid command. Type \"!help\" for help." ).queue();
             return;
         }
     }
 
-    private boolean create(long owner, String text, String[] options) {
+    private boolean create(long owner, String text, String[] options, String pollID) {
         final DiscordPoll poll = new DiscordPoll();
-        poll.setId(DiscordPoll.getUniqueId());
+        poll.setId(pollID);
         poll.setText(text);
         poll.setOwner(owner);
         poll.setOpenTime(LocalDateTime.now());
@@ -129,8 +135,8 @@ public class CommandPoll implements Command {
         return this.pollDao.createPoll(poll) && this.pollDao.setOptions(poll.getId(), Arrays.asList(options));
     }
 
-    private void vote(String pollName, long user, int vote, MessageReceivedEvent event) {
-        this.pollDao.setVote(pollName, user, vote);
+    private boolean vote(String pollName, long user, int vote, MessageReceivedEvent event) {
+        return this.pollDao.setVote(user, pollName, vote);
     }
 
     private void results(String pollName, MessageReceivedEvent event) {
