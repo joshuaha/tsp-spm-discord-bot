@@ -1,5 +1,6 @@
 package command;
 
+import com.mysql.jdbc.StringUtils;
 import factory.ServiceFactory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.joda.time.LocalDateTime;
@@ -38,17 +39,26 @@ public class CommandPoll implements Command {
      */
     @Override
     public void execute(String[] args, MessageReceivedEvent event) {
-        if ("create".equals(args[0])) {
+        if (args.length == 0) {
+            event.getChannel().sendMessage("Invalid command. Type \"!help\" for help.").queue();
+            return;
+        }
+
+        if ("create".equals(args[0]) && args.length > 1) {
+            //args.length > 1 is to check that "!poll create" wasn't the only thing entered.
 
             String pollID = DiscordPoll.getUniqueId();
             final String text = args[1];
             final long owner = event.getAuthor().getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
-            if (this.createPoll(owner, text, options, pollID)) {
+            //TODO - Don't allow empty string options.
+            if (options.length < 1 || StringUtils.isEmptyOrWhitespaceOnly(text)) {
+                event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
+            } else if (this.createPoll(owner, text, options, pollID)) {
                 event.getChannel().sendMessage("Poll created successfully.").queue();
-                event.getChannel().sendMessage("Your Poll ID is " + pollID).queue();
+                event.getChannel().sendMessage("Your Poll ID is " + pollID + ".").queue();
             } else {
-                event.getChannel().sendMessage("Unable to create poll.").queue();
+                event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
             }
 
         } else if ("vote".equals(args[0])) {
@@ -110,7 +120,7 @@ public class CommandPoll implements Command {
             }
 
         } else {
-            //TODO - Send message saying invalid command and give them help.
+            event.getChannel().sendMessage("Invalid command. Type \"!help\" for help.").queue();
             return;
         }
     }

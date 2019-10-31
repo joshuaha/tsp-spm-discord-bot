@@ -2,6 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="segfault.tsp-spm-discord-bot.main" target="1.8" />
+      <module name="segfault.tsp-spm-discord-bot.test" target="11" />
       <module name="tsp-spm-discord-bot.main" target="1.8" />
       <module name="tsp-spm-discord-bot.test" target="11" />
       <module name="tsp-spm-discord-bot_main" target="1.8" />
