@@ -41,12 +41,12 @@ public class CommandPoll implements Command {
 
             String pollID = DiscordPoll.getUniqueId();
             final String text = args[1];
-            final long owner = event.getAuthor().getIdLong();
+            final long ownerId = event.getAuthor().getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
             //TODO - Don't allow empty string options.
             if (options.length < 1 || StringUtils.isEmptyOrWhitespaceOnly(text)) {
                 event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
-            } else if (this.createPoll(owner, text, options, pollID)) {
+            } else if (this.createPoll(ownerId, text, options, pollID)) {
                 event.getChannel().sendMessage("Poll created successfully.").queue();
                 event.getChannel().sendMessage("Your Poll ID is " + pollID + ".").queue();
             } else {
@@ -55,10 +55,10 @@ public class CommandPoll implements Command {
 
         } else if ("vote".equals(args[0])) {
 
-            final String pollName = args[1];
+            final String pollId = args[1];
             final int vote = Integer.parseInt(args[2]) - 1;
             final long userId = event.getAuthor().getIdLong();
-            this.setVote(pollName, userId, vote, event);
+            this.setVote(pollId, userId, vote, event);
             //TODO - Let user know vote is index not name of option.
 
         } else if ("results".equals(args[0])) {
@@ -117,18 +117,18 @@ public class CommandPoll implements Command {
         }
     }
 
-    private boolean createPoll(long owner, String text, String[] options, String pollID) {
+    private boolean createPoll(long ownerId, String text, String[] options, String pollID) {
         final DiscordPoll poll = new DiscordPoll();
         poll.setId(pollID);
         poll.setText(text);
-        poll.setOwner(owner);
+        poll.setOwnerId(ownerId);
         poll.setOpenTime(LocalDateTime.now());
         poll.setCloseTime(LocalDateTime.now().plusDays(1));
         return this.pollDao.createPoll(poll) && this.pollDao.setOptions(poll.getId(), Arrays.asList(options));
     }
 
-    private boolean setVote(String pollName, long userId, int vote, MessageReceivedEvent event) {
-        return this.pollDao.setVote(userId, pollName, vote);
+    private boolean setVote(String pollId, long userId, int vote, MessageReceivedEvent event) {
+        return this.pollDao.setVote(pollId, userId, vote);
     }
 
     private void getResults(String pollId, MessageReceivedEvent event) {
