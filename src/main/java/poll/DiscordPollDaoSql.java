@@ -4,6 +4,8 @@ import factory.DatabaseService;
 import factory.ServiceFactory;
 import org.joda.time.LocalDateTime;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,7 +47,6 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             }
             set.close();
             stmt.close();
-            conn.close();
             return poll;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -68,7 +69,6 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             stmt.setString(5, LocalDateTime.now().plusDays(1).toString());
             stmt.execute();
             stmt.close();
-            conn.close();
             return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -93,7 +93,6 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             }
             set.close();
             stmt.close();
-            conn.close();
             return Collections.unmodifiableList(list);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -117,7 +116,6 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             }
             stmt.executeBatch();
             stmt.close();
-            conn.close();
             return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -145,7 +143,6 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             }
             set.close();
             stmt.close();
-            conn.close();
             return votes;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -166,7 +163,6 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             stmt.setInt(3, optionId);
             stmt.execute();
             stmt.close();
-            conn.close();
             return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
