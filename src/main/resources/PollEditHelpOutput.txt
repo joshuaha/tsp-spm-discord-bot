@@ -1,0 +1,7 @@
+**poll edit "pollname" name "new name"**
+The poll edit name command will allow you to rename an existing poll. Access the exisitng poll by specifying the name of the poll, and rename it by specifying the new name for the poll.
+
+**poll edit "pollname" option "index" "new option"**
+The poll edit option commnad will allow you to edit an option of an existing poll. Access the existing poll option by specifying the poll name and the index of the desired option to edit. Then you can rename an exisitng option, or add a new option by specifying an index greater than the last index. __**Note that this command will reset all votes for the poll.**__
+
+**Note that whatever appears in quotation marks needs to also be specified within quotation marks when calling the command.**
