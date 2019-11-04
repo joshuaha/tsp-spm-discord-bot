@@ -7,16 +7,7 @@ import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
 import poll.DiscordPollOld;
-
 import java.util.Arrays;
-
-// TODO - Remove? From merge conflict
-//import java.io.ByteArrayInputStream;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.io.StringBufferInputStream;
-//import java.util.Arrays;
-//import java.util.Scanner;
 
 public class CommandPoll implements Command {
     private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
@@ -88,7 +79,9 @@ public class CommandPoll implements Command {
                 final String newOption = args[4];
 
                 //TODO - Fix options to new version of options.
-                if ( false /*optionIndex > this.pollDao.getPoll(pollName).getOptions().size()*/ ) {
+                if ( false
+//                        optionIndex > this.pollDao.getPoll(pollName)
+                ) {
 
                     if ( optionIndex > Integer.MAX_VALUE ) optionIndex = Integer.MAX_VALUE;
                     if ( optionIndex <= 0 ) {

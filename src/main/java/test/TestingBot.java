@@ -7,6 +7,10 @@ import poll.DiscordPollDao;
 public class TestingBot {
     private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
 
+    /**
+     * Sends messages to the command line to be tested.
+     * @param event
+     */
     public void sendTestStrings( MessageReceivedEvent event ) {
         final StringBuilder message = new StringBuilder();
         message.append( "!poll create \"NoArgs\" \n" );
