@@ -6,10 +6,10 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
-
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+
 
 public class CommandPoll implements Command {
     private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
@@ -74,15 +74,19 @@ public class CommandPoll implements Command {
 
                 this.pollDao.getPoll(pollName).setText(args[3]);
 
-            } else if ("option".equalsIgnoreCase(edit)) {
+            }
+            //Editing options resets the voting
+            else if ("option".equalsIgnoreCase(edit)) {
 
                 int optionIndex = Integer.parseInt(args[3]);
                 final String newOption = args[4];
 
-                //TODO - Fix options to new version of options.
-                if (false /*optionIndex > this.pollDao.getPoll(pollName).getOptions().size()*/) {
+                //Adding new option
+                if ( optionIndex > this.pollDao.getOptions( pollName ).size() ) {
 
+                    //Stop users from breaking the bot
                     if (optionIndex > Integer.MAX_VALUE) optionIndex = Integer.MAX_VALUE;
+
                     if (optionIndex <= 0) {
                         final StringBuilder message = new StringBuilder();
                         message.append("Poll indexes begin at 1");
@@ -91,25 +95,32 @@ public class CommandPoll implements Command {
                         return;
                     }
 
-                    /*
-                    List< DiscordPoll.Option > options = this.pollDao.getPoll( pollName ).getOptions();
+
+                    List<String> options = this.pollDao.getOptions(pollName);
                     List<String> newOptions = new ArrayList<>();
-                    for (DiscordPoll.Option o : options ) {
-                        newOptions.add( o.getText() );
+                    //Copy the old poll options
+                    for ( String str : options ) {
+                        newOptions.add( str );
                     }
                     newOptions.add( newOption );
 
-                    this.pollDao.getPoll( pollName ).setOptions( newOptions );
+                    this.pollDao.setOptions( pollName, newOptions );
 
                     event.getChannel().sendMessage( "Options were updated for " +
                             this.pollDao.getPoll( pollName).getText() + " Poll results have been reset." );
-                    */
+
+                }
+                //Edit existing option
+                else {
+                    List<String> options = this.pollDao.getOptions(pollName);
+                    options.set( optionIndex, newOption );
+                    this.pollDao.setOptions( pollName, options );
+
+                    event.getChannel().sendMessage( "Options were updated for " +
+                            this.pollDao.getPoll( pollName).getText() + " Poll results have been reset." );
                 }
 
-                //TODO - Edit existing option.
-                //TODO - Reset results and notify that poll results are reset for X Option.
-
-            }
+            } //End option editing
 
         } else {
             event.getChannel().sendMessage("Invalid command. Type \"!help\" for help.").queue();
