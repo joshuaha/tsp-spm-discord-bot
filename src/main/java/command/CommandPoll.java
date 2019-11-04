@@ -120,7 +120,18 @@ public class CommandPoll implements Command {
                             this.pollDao.getPoll( pollName).getText() + " Poll results have been reset." );
                 }
 
-            } //End option editing
+            }
+            //Edit close time
+            else if ( "time".equalsIgnoreCase(edit) ) {
+
+                LocalDateTime endTime = LocalDateTime.parse(args[3]);
+//                LocalDateTime oldTime = this.pollDao.getPoll(pollName).getCloseTime();
+
+                this.pollDao.getPoll( pollName ).setCloseTime( endTime );
+
+                event.getChannel().sendMessage( "Poll close time updated for  " +
+                        this.pollDao.getPoll( pollName).getText() + " Poll now ends at " + endTime.toString() );
+            }
 
         } else {
             event.getChannel().sendMessage("Invalid command. Type \"!help\" for help.").queue();
