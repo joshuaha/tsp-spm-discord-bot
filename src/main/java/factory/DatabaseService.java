@@ -8,22 +8,27 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DatabaseService {
-    public Connection getDatabaseConnection() throws SQLException {
-        final Properties properties = new Properties();
+    private static final Connection CONNECTION;
+
+    static {
+        Connection connection;
         try {
+            final Properties properties = new Properties();
             properties.load(new FileInputStream("database.properties"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException ex) {
+            connection = DriverManager.getConnection(
+                    properties.getProperty("database"),
+                    properties.getProperty("username"),
+                    properties.getProperty("password")
+            );
+        } catch (IOException | ClassNotFoundException | SQLException ex) {
             ex.printStackTrace();
+            connection = null;
         }
-        return DriverManager.getConnection(
-                properties.getProperty("database"),
-                properties.getProperty("username"),
-                properties.getProperty("password")
-        );
+        CONNECTION = connection;
+    }
+
+    public Connection getDatabaseConnection() {
+        return CONNECTION;
     }
 }
