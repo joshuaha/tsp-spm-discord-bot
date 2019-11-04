@@ -10,7 +10,7 @@ public class DiscordPoll {
     private static final Random RNG = new Random();
 
     private String id;
-    private long owner;
+    private long ownerId;
     private String text;
     private LocalDateTime openTime;
     private LocalDateTime closeTime;
@@ -31,12 +31,12 @@ public class DiscordPoll {
         this.id = id;
     }
 
-    public long getOwner() {
-        return owner;
+    public long getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(long owner) {
-        this.owner = owner;
+    public void setOwnerId(long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getText() {

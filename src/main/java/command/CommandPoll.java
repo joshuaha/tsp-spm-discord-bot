@@ -1,24 +1,15 @@
 package command;
 
+import com.mysql.jdbc.StringUtils;
 import factory.ServiceFactory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
-import poll.DiscordPollDaoSql;
-import poll.DiscordPollOld;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-// TODO - Remove? From merge conflict
-//import java.io.ByteArrayInputStream;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.io.StringBufferInputStream;
-//import java.util.Arrays;
-//import java.util.Scanner;
 
 public class CommandPoll implements Command {
     private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
@@ -40,50 +31,61 @@ public class CommandPoll implements Command {
      */
     @Override
     public void execute(String[] args, MessageReceivedEvent event) {
-        if ("create".equals(args[0])) {
+        if (args.length == 0) {
+            event.getChannel().sendMessage("Invalid command. Type \"!help\" for help.").queue();
+            return;
+        }
 
+        if ("create".equals(args[0]) && args.length > 1) {
+            //args.length > 1 is to check that "!poll create" wasn't the only thing entered.
+
+            String pollID = DiscordPoll.getUniqueId();
             final String text = args[1];
-            final long owner = event.getAuthor().getIdLong();
+            final long ownerId = event.getAuthor().getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
-            if (this.create(owner, text, options)) {
+            //TODO - Don't allow empty string options.
+            if (options.length < 1 || StringUtils.isEmptyOrWhitespaceOnly(text)) {
+                event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
+            } else if (this.createPoll(ownerId, text, options, pollID)) {
                 event.getChannel().sendMessage("Poll created successfully.").queue();
+                event.getChannel().sendMessage("Your Poll ID is " + pollID + ".").queue();
             } else {
-                event.getChannel().sendMessage("Unable to create poll.").queue();
+                event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
             }
 
         } else if ("vote".equals(args[0])) {
 
-            final String pollName = args[1];
+            final String pollId = args[1];
             final int vote = Integer.parseInt(args[2]) - 1;
-            final long user = event.getAuthor().getIdLong();
-            this.vote(pollName, user, vote, event);
+            final long userId = event.getAuthor().getIdLong();
+            this.setVote(pollId, userId, vote, event);
             //TODO - Let user know vote is index not name of option.
 
         } else if ("results".equals(args[0])) {
 
-            final String pollName = args[1];
-            this.results(pollName, event);
+            final String pollId = args[1];
+            this.getResults(pollId, event);
 
-        } else if ( "edit".equals( args[0] ) ) {
+        } else if ("edit".equals(args[0])) {
 
             final String pollName = args[1];
             final String edit = args[2];
-            if ( "name".equalsIgnoreCase( edit ) ) {
+            if ("name".equalsIgnoreCase(edit)) {
 
-                this.pollDao.getPoll( pollName ).setText( args[3] );
+                this.pollDao.getPoll(pollName).setText(args[3]);
 
-            } else if ( "option".equalsIgnoreCase( edit ) ) {
+            } else if ("option".equalsIgnoreCase(edit)) {
 
-                int optionIndex = Integer.parseInt( args[3] );
+                int optionIndex = Integer.parseInt(args[3]);
                 final String newOption = args[4];
 
                 //TODO - Fix options to new version of options.
-                if ( false /*optionIndex > this.pollDao.getPoll(pollName).getOptions().size()*/ ) {
+                if (false /*optionIndex > this.pollDao.getPoll(pollName).getOptions().size()*/) {
 
-                    if ( optionIndex > Integer.MAX_VALUE ) optionIndex = Integer.MAX_VALUE;
-                    if ( optionIndex <= 0 ) {
+                    if (optionIndex > Integer.MAX_VALUE) optionIndex = Integer.MAX_VALUE;
+                    if (optionIndex <= 0) {
                         final StringBuilder message = new StringBuilder();
-                        message.append( "Poll indexes begin at 1" );
+                        message.append("Poll indexes begin at 1");
                         event.getMessage().getAuthor().openPrivateChannel().queue((channel)
                                 -> channel.sendMessage(message).queue());
                         return;
@@ -110,36 +112,43 @@ public class CommandPoll implements Command {
             }
 
         } else {
-            //TODO - Send message saying invalid command and give them help.
+            event.getChannel().sendMessage("Invalid command. Type \"!help\" for help.").queue();
             return;
         }
     }
 
-    private boolean create(long owner, String text, String[] options) {
+    private boolean createPoll(long ownerId, String text, String[] options, String pollID) {
         final DiscordPoll poll = new DiscordPoll();
-        poll.setId(DiscordPoll.getUniqueId());
+        poll.setId(pollID);
         poll.setText(text);
-        poll.setOwner(owner);
+        poll.setOwnerId(ownerId);
         poll.setOpenTime(LocalDateTime.now());
         poll.setCloseTime(LocalDateTime.now().plusDays(1));
         return this.pollDao.createPoll(poll) && this.pollDao.setOptions(poll.getId(), Arrays.asList(options));
     }
 
-    private void vote(String pollName, long user, int vote, MessageReceivedEvent event) {
-        this.pollDao.setVote(pollName, user, vote);
+    private boolean setVote(String pollId, long userId, int vote, MessageReceivedEvent event) {
+        return this.pollDao.setVote(pollId, userId, vote);
     }
 
-    private void results(String pollName, MessageReceivedEvent event) {
-        final DiscordPollOld poll = null;
+    private void getResults(String pollId, MessageReceivedEvent event) {
+        final DiscordPoll poll = this.pollDao.getPoll(pollId);
+        final List<Integer> votes = new ArrayList<>();
+        final List<String> options = this.pollDao.getOptions(poll.getId());
+        for (int i = 0; i < options.size(); i++) {
+            votes.add(this.pollDao.getVotes(poll.getId(), i));
+        }
+        //assemble the output message
         final StringBuilder message = new StringBuilder();
-        message.append(poll.getName()).append(System.lineSeparator());
-        for (DiscordPollOld.Option option : poll.getOptions()) {
-            message.append(option.getText())
-                    .append(": ")
-                    .append(option.getVotes())
+        message.append(poll.getId())
+                .append(System.lineSeparator())
+                .append(poll.getText())
+                .append(System.lineSeparator());
+        for (int i = 0; i < options.size(); i++) {
+            message.append(String.format("%s: %d", options.get(i), votes.get(i)))
                     .append(System.lineSeparator());
         }
-        //event.getMessage().delete().queue();
-        event.getMessage().getAuthor().openPrivateChannel().queue((channel) -> channel.sendMessage(message).queue());
+        //print the output message
+        event.getChannel().sendMessage(message.toString()).queue();
     }
 }
