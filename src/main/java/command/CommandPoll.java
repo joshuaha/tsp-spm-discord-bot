@@ -81,7 +81,7 @@ public class CommandPoll implements Command {
                 int optionIndex = Integer.parseInt(args[3]);
                 final String newOption = args[4];
 
-                //Adding an option
+                //Adding new option
                 if ( optionIndex > this.pollDao.getOptions( pollName ).size() ) {
 
                     //Stop users from breaking the bot
@@ -110,11 +110,17 @@ public class CommandPoll implements Command {
                             this.pollDao.getPoll( pollName).getText() + " Poll results have been reset." );
 
                 }
+                //Edit existing option
+                else {
+                    List<String> options = this.pollDao.getOptions(pollName);
+                    options.set( optionIndex, newOption );
+                    this.pollDao.setOptions( pollName, options );
 
-                //TODO - Edit existing option.
-                //TODO - Reset results and notify that poll results are reset for X Option.
+                    event.getChannel().sendMessage( "Options were updated for " +
+                            this.pollDao.getPoll( pollName).getText() + " Poll results have been reset." );
+                }
 
-            }
+            } //End option editing
 
         } else {
             event.getChannel().sendMessage("Invalid command. Type \"!help\" for help.").queue();
