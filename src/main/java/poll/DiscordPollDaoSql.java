@@ -15,10 +15,13 @@ import java.util.List;
 public class DiscordPollDaoSql implements DiscordPollDao {
     private static final String SQL_GET_POLL = "SELECT * FROM POLL WHERE ID = ?";
     private static final String SQL_CREATE_POLL = "INSERT INTO POLL (ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME) values (?, ?, ?, ?, ?)";
+    private static final String SQL_UPDATE_POLL = "UPDATE POLL SET OWNER_ID = ?, TEXT = ?, OPEN_TIME = ?, CLOSE_TIME = ? WHERE ID = ?";
     private static final String SQL_GET_OPTIONS = "SELECT * FROM OPTIONS WHERE POLL_ID = ?";
     private static final String SQL_SET_OPTIONS = "INSERT INTO OPTIONS (POLL_ID, ID, TEXT) VALUES (?, ?, ?)";
+    private static final String SQL_REMOVE_OPTIONS = "DELETE FROM OPTIONS WHERE POLL_ID = ?";
     private static final String SQL_GET_VOTES = "SELECT COUNT(*) AS VOTES FROM VOTES WHERE POLL_ID = ? AND OPTION_ID = ?";
     private static final String SQL_SET_VOTE = "INSERT INTO VOTES (POLL_ID, USER_ID, OPTION_ID) VALUES (?, ?, ?)";
+    private static final String SQL_REMOVE_VOTES = "DELETE FROM VOTES WHERE POLL_ID = ?";
     private final DatabaseService databaseService = ServiceFactory.getDatabaseService();
 
     /**
@@ -78,6 +81,28 @@ public class DiscordPollDaoSql implements DiscordPollDao {
      * {@inheritDoc}
      */
     @Override
+    public boolean updatePoll(DiscordPoll poll) {
+        try {
+            final Connection conn = this.databaseService.getDatabaseConnection();
+            final PreparedStatement stmt = conn.prepareStatement(SQL_UPDATE_POLL);
+            stmt.setLong(1, poll.getOwnerId());
+            stmt.setString(2, poll.getText());
+            stmt.setString(3, poll.getOpenTime().toString());
+            stmt.setString(4, poll.getCloseTime().toString());
+            stmt.setString(5, poll.getId());
+            stmt.execute();
+            stmt.close();
+            return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<String> getOptions(String pollId) {
         try {
             final Connection conn = this.databaseService.getDatabaseConnection();
@@ -103,6 +128,8 @@ public class DiscordPollDaoSql implements DiscordPollDao {
      */
     @Override
     public boolean setOptions(String pollId, List<String> options) {
+        this.removeVotes(pollId);
+        this.removeOptions(pollId);
         try {
             final Connection conn = this.databaseService.getDatabaseConnection();
             final PreparedStatement stmt = conn.prepareStatement(SQL_SET_OPTIONS);
@@ -117,6 +144,23 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removeOptions(String pollId) {
+        try {
+            final Connection conn = this.databaseService.getDatabaseConnection();
+            final PreparedStatement stmt = conn.prepareStatement(SQL_REMOVE_OPTIONS);
+            stmt.setString(1, pollId);
+            stmt.execute();
+            stmt.close();
+            return true;
+        } catch (SQLException ex) {
             return false;
         }
     }
@@ -159,6 +203,21 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             stmt.setString(1, pollId);
             stmt.setLong(2, userId);
             stmt.setInt(3, optionId);
+            stmt.execute();
+            stmt.close();
+            return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean removeVotes(String pollId) {
+        try {
+            final Connection conn = this.databaseService.getDatabaseConnection();
+            final PreparedStatement stmt = conn.prepareStatement(SQL_REMOVE_VOTES);
+            stmt.setString(1, pollId);
             stmt.execute();
             stmt.close();
             return true;
