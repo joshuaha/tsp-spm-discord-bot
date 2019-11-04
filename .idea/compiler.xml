@@ -7,7 +7,7 @@
       <module name="tsp-spm-discord-bot.main" target="1.8" />
       <module name="tsp-spm-discord-bot.test" target="11" />
       <module name="tsp-spm-discord-bot_main" target="1.8" />
-      <module name="tsp-spm-discord-bot_test" target="1.8" />
+      <module name="tsp-spm-discord-bot_test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
