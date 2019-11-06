@@ -70,7 +70,7 @@ public class CommandPoll implements Command {
 
             final String pollName = args[1];
             final String edit = args[2];
-            if ("name".equalsIgnoreCase(edit)) {
+            if ("text".equalsIgnoreCase(edit)) {
 
                 this.pollDao.getPoll(pollName).setText(args[3]);
 
