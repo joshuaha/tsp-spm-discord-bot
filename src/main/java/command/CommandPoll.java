@@ -65,7 +65,7 @@ public class CommandPoll implements Command {
             final String pollId = args[1];
             this.getResults(pollId, event);
 
-        } else if ("edit".equals(args[0])) {
+        } else if ("edit".equals(args[0]) && ownerCheck(event.getAuthor().getIdLong(), this.pollDao.getPoll(args[1]).getOwnerId())) {
 
             final String pollId = args[1];
             final String edit = args[2];
@@ -181,5 +181,12 @@ public class CommandPoll implements Command {
         }
         //print the output message
         event.getChannel().sendMessage(message.toString()).queue();
+    }
+
+    private boolean ownerCheck(long accessorID, long ownerID) {
+        if(accessorID == ownerID)
+            return true;
+        else
+            return false;
     }
 }
