@@ -150,7 +150,15 @@ public class CommandPoll implements Command {
     }
 
     private boolean setVote(String pollId, long userId, int vote, MessageReceivedEvent event) {
-        return this.pollDao.setVote(pollId, userId, vote);
+        final DiscordPoll poll = this.pollDao.getPoll(pollId);
+        final LocalDateTime currentTime = LocalDateTime.now();
+        final LocalDateTime openTime = poll.getOpenTime();
+        final LocalDateTime closeTime = poll.getCloseTime();
+        if (openTime.compareTo(currentTime) <= 0 && currentTime.compareTo(closeTime) <= 0) {
+            return this.pollDao.setVote(pollId, userId, vote);
+        } else {
+            return false;
+        }
     }
 
     private void getResults(String pollId, MessageReceivedEvent event) {

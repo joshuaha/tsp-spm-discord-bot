@@ -30,6 +30,7 @@ public class MessageListener extends ListenerAdapter {
                 final Command command = Commands.getInstance().getCommand(alias);
                 if (command != null) {
                     command.execute(args, event);
+                    event.getMessage().delete().queue();
                 } else {
                     event.getChannel().sendMessage(String.format("Command \"%s\" not recognized", alias)).queue();
                 }

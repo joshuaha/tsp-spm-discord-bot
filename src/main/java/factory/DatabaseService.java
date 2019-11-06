@@ -11,6 +11,7 @@ public class DatabaseService {
     private static final Connection CONNECTION;
 
     static {
+        //get connection to database using the database properties file
         Connection connection;
         try {
             final Properties properties = new Properties();
@@ -28,6 +29,12 @@ public class DatabaseService {
         CONNECTION = connection;
     }
 
+    /**
+     * Retrieves the existing database connection. This resource is shared, and closing it will cause
+     * database functions to cease.
+     *
+     * @return the database connection
+     */
     public Connection getDatabaseConnection() {
         return CONNECTION;
     }
