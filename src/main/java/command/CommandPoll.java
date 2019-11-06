@@ -43,7 +43,6 @@ public class CommandPoll implements Command {
             final String text = args[1];
             final long ownerId = event.getAuthor().getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
-            //TODO - Don't allow empty string options.
             if (options.length < 1 || StringUtils.isEmptyOrWhitespaceOnly(text)) {
                 event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
             } else if (this.createPoll(ownerId, text, options, pollID)) {
@@ -68,11 +67,13 @@ public class CommandPoll implements Command {
 
         } else if ("edit".equals(args[0])) {
 
-            final String pollName = args[1];
+            final String pollId = args[1];
             final String edit = args[2];
             if ("text".equalsIgnoreCase(edit)) {
 
-                this.pollDao.getPoll(pollName).setText(args[3]);
+                this.pollDao.getPoll(pollId).setText(args[3]);
+                event.getChannel().sendMessage("Successfully editing poll text. New text: \"" + this.pollDao.
+                        getPoll(pollId).getText() +  "\"").queue();
 
             }
             //Editing options resets the voting
@@ -82,7 +83,7 @@ public class CommandPoll implements Command {
                 final String newOption = args[4];
 
                 //Adding new option
-                if ( optionIndex > this.pollDao.getOptions( pollName ).size() ) {
+                if ( optionIndex > this.pollDao.getOptions( pollId ).size() ) {
 
                     //Stop users from breaking the bot
                     if (optionIndex > Integer.MAX_VALUE) optionIndex = Integer.MAX_VALUE;
@@ -96,7 +97,7 @@ public class CommandPoll implements Command {
                     }
 
 
-                    List<String> options = this.pollDao.getOptions(pollName);
+                    List<String> options = this.pollDao.getOptions(pollId);
                     List<String> newOptions = new ArrayList<>();
                     //Copy the old poll options
                     for ( String str : options ) {
@@ -104,20 +105,20 @@ public class CommandPoll implements Command {
                     }
                     newOptions.add( newOption );
 
-                    this.pollDao.setOptions( pollName, newOptions );
+                    this.pollDao.setOptions( pollId, newOptions );
 
                     event.getChannel().sendMessage( "Options were updated for " +
-                            this.pollDao.getPoll( pollName).getText() + " Poll results have been reset." );
+                            this.pollDao.getPoll( pollId).getText() + " Poll results have been reset." );
 
                 }
                 //Edit existing option
                 else {
-                    List<String> options = this.pollDao.getOptions(pollName);
+                    List<String> options = this.pollDao.getOptions(pollId);
                     options.set( optionIndex, newOption );
-                    this.pollDao.setOptions( pollName, options );
+                    this.pollDao.setOptions( pollId, options );
 
                     event.getChannel().sendMessage( "Options were updated for " +
-                            this.pollDao.getPoll( pollName).getText() + " Poll results have been reset." );
+                            this.pollDao.getPoll( pollId).getText() + " Poll results have been reset." );
                 }
 
             }
@@ -127,10 +128,10 @@ public class CommandPoll implements Command {
                 LocalDateTime endTime = LocalDateTime.parse(args[3]);
 //                LocalDateTime oldTime = this.pollDao.getPoll(pollName).getCloseTime();
 
-                this.pollDao.getPoll( pollName ).setCloseTime( endTime );
+                this.pollDao.getPoll( pollId ).setCloseTime( endTime );
 
                 event.getChannel().sendMessage( "Poll close time updated for  " +
-                        this.pollDao.getPoll( pollName).getText() + " Poll now ends at " + endTime.toString() );
+                        this.pollDao.getPoll( pollId).getText() + " Poll now ends at " + endTime.toString() );
             }
 
         } else {
