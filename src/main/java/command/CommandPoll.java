@@ -108,7 +108,7 @@ public class CommandPoll implements Command {
                     this.pollDao.setOptions( pollId, newOptions );
 
                     event.getChannel().sendMessage( "Options were updated for " +
-                            this.pollDao.getPoll( pollId).getText() + " Poll results have been reset." );
+                            this.pollDao.getPoll( pollId).getText() + " Poll results have been reset." ).queue();
 
                 }
                 //Edit existing option
@@ -118,7 +118,7 @@ public class CommandPoll implements Command {
                     this.pollDao.setOptions( pollId, options );
 
                     event.getChannel().sendMessage( "Options were updated for " +
-                            this.pollDao.getPoll( pollId).getText() + " Poll results have been reset." );
+                            this.pollDao.getPoll( pollId).getText() + " Poll results have been reset." ).queue();
                 }
 
             }
@@ -131,7 +131,7 @@ public class CommandPoll implements Command {
                 this.pollDao.getPoll( pollId ).setCloseTime( endTime );
 
                 event.getChannel().sendMessage( "Poll close time updated for  " +
-                        this.pollDao.getPoll( pollId).getText() + " Poll now ends at " + endTime.toString() );
+                        this.pollDao.getPoll( pollId).getText() + " Poll now ends at " + endTime.toString() ).queue();
             }
 
         } else {
