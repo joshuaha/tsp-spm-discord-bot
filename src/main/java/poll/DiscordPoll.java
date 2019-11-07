@@ -14,6 +14,7 @@ public class DiscordPoll {
     private String text;
     private LocalDateTime openTime;
     private LocalDateTime closeTime;
+    private long messageId;
 
     public static String getUniqueId() {
         final StringBuilder id = new StringBuilder();
@@ -61,5 +62,13 @@ public class DiscordPoll {
 
     public void setCloseTime(LocalDateTime closeTime) {
         this.closeTime = closeTime;
+    }
+
+    public long getMessageId() {
+        return this.messageId;
+    }
+
+    public void setMessageId(long messageId) {
+        this.messageId = messageId;
     }
 }

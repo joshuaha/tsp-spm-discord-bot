@@ -2,10 +2,12 @@ package command;
 
 import com.mysql.jdbc.StringUtils;
 import factory.ServiceFactory;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
+
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,17 +40,17 @@ public class CommandPoll implements Command {
 
         if ("create".equals(args[0]) && args.length > 1) {
             //args.length > 1 is to check that "!poll create" wasn't the only thing entered.
-
-            String pollID = DiscordPoll.getUniqueId();
+            final Message message = event.getChannel().sendMessage("Creating poll...").complete();
+            final String pollId = DiscordPoll.getUniqueId();
             final String text = args[1];
             final long ownerId = event.getAuthor().getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
+            final long messageId = message.getIdLong();
             //TODO - Don't allow empty string options.
             if (options.length < 1 || StringUtils.isEmptyOrWhitespaceOnly(text)) {
                 event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
-            } else if (this.createPoll(ownerId, text, options, pollID)) {
-                event.getChannel().sendMessage("Poll created successfully.").queue();
-                event.getChannel().sendMessage("Your Poll ID is " + pollID + ".").queue();
+            } else if (this.createPoll(ownerId, text, options, pollId, messageId)) {
+                this.updateResults(pollId, event);
             } else {
                 event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
             }
@@ -82,7 +84,7 @@ public class CommandPoll implements Command {
                 final String newOption = args[4];
 
                 //Adding new option
-                if ( optionIndex > this.pollDao.getOptions( pollName ).size() ) {
+                if (optionIndex > this.pollDao.getOptions(pollName).size()) {
 
                     //Stop users from breaking the bot
                     if (optionIndex > Integer.MAX_VALUE) optionIndex = Integer.MAX_VALUE;
@@ -99,25 +101,25 @@ public class CommandPoll implements Command {
                     List<String> options = this.pollDao.getOptions(pollName);
                     List<String> newOptions = new ArrayList<>();
                     //Copy the old poll options
-                    for ( String str : options ) {
-                        newOptions.add( str );
+                    for (String str : options) {
+                        newOptions.add(str);
                     }
-                    newOptions.add( newOption );
+                    newOptions.add(newOption);
 
-                    this.pollDao.setOptions( pollName, newOptions );
+                    this.pollDao.setOptions(pollName, newOptions);
 
-                    event.getChannel().sendMessage( "Options were updated for " +
-                            this.pollDao.getPoll( pollName).getText() + " Poll results have been reset." );
+                    event.getChannel().sendMessage("Options were updated for " +
+                            this.pollDao.getPoll(pollName).getText() + " Poll results have been reset.");
 
                 }
                 //Edit existing option
                 else {
                     List<String> options = this.pollDao.getOptions(pollName);
-                    options.set( optionIndex, newOption );
-                    this.pollDao.setOptions( pollName, options );
+                    options.set(optionIndex, newOption);
+                    this.pollDao.setOptions(pollName, options);
 
-                    event.getChannel().sendMessage( "Options were updated for " +
-                            this.pollDao.getPoll( pollName).getText() + " Poll results have been reset." );
+                    event.getChannel().sendMessage("Options were updated for " +
+                            this.pollDao.getPoll(pollName).getText() + " Poll results have been reset.");
                 }
 
             } //End option editing
@@ -128,13 +130,14 @@ public class CommandPoll implements Command {
         }
     }
 
-    private boolean createPoll(long ownerId, String text, String[] options, String pollID) {
+    private boolean createPoll(long ownerId, String text, String[] options, String pollId, long messageId) {
         final DiscordPoll poll = new DiscordPoll();
-        poll.setId(pollID);
+        poll.setId(pollId);
         poll.setText(text);
         poll.setOwnerId(ownerId);
         poll.setOpenTime(LocalDateTime.now());
         poll.setCloseTime(LocalDateTime.now().plusDays(1));
+        poll.setMessageId(messageId);
         return this.pollDao.createPoll(poll) && this.pollDao.setOptions(poll.getId(), Arrays.asList(options));
     }
 
@@ -169,5 +172,20 @@ public class CommandPoll implements Command {
         }
         //print the output message
         event.getChannel().sendMessage(message.toString()).queue();
+    }
+
+    private void updateResults(String pollId, MessageReceivedEvent event) {
+        final DiscordPoll poll = this.pollDao.getPoll(pollId);
+        final List<String> options = this.pollDao.getOptions(pollId);
+        final StringBuilder message = new StringBuilder();
+        message.append(String.format("Poll **%s**", poll.getId())).append(System.lineSeparator());
+        message.append(poll.getText()).append(System.lineSeparator());
+        for (int optionId = 0; optionId < options.size(); optionId++) {
+            int votes = this.pollDao.getVotes(pollId, optionId);
+            message.append(String.format("%s: %d", options.get(optionId), votes)).append(System.lineSeparator());
+        }
+        System.out.println("AHHH");
+        System.out.println(poll.getMessageId());
+        event.getChannel().editMessageById(poll.getMessageId(), message.toString()).queue();
     }
 }

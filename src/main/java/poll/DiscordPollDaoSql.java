@@ -13,8 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class DiscordPollDaoSql implements DiscordPollDao {
-    private static final String SQL_GET_POLL = "SELECT * FROM POLL WHERE ID = ?";
-    private static final String SQL_CREATE_POLL = "INSERT INTO POLL (ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME) values (?, ?, ?, ?, ?)";
+    private static final String SQL_GET_POLL = "SELECT ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, MESSAGE_ID FROM POLL WHERE ID = ?";
+    private static final String SQL_CREATE_POLL = "INSERT INTO POLL (ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, MESSAGE_ID) values (?, ?, ?, ?, ?, ?)";
     private static final String SQL_UPDATE_POLL = "UPDATE POLL SET OWNER_ID = ?, TEXT = ?, OPEN_TIME = ?, CLOSE_TIME = ? WHERE ID = ?";
     private static final String SQL_GET_OPTIONS = "SELECT * FROM OPTIONS WHERE POLL_ID = ?";
     private static final String SQL_SET_OPTIONS = "INSERT INTO OPTIONS (POLL_ID, ID, TEXT) VALUES (?, ?, ?)";
@@ -38,11 +38,12 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             final DiscordPoll poll;
             if (set.next()) {
                 poll = new DiscordPoll();
-                poll.setId(set.getString("ID"));
-                poll.setOwnerId(set.getLong("OWNER_ID"));
-                poll.setText(set.getString("TEXT"));
-                poll.setOpenTime(new LocalDateTime(set.getTimestamp("OPEN_TIME")));
-                poll.setCloseTime(new LocalDateTime(set.getTimestamp("CLOSE_TIME")));
+                poll.setId(set.getString(1));
+                poll.setOwnerId(set.getLong(2));
+                poll.setText(set.getString(3));
+                poll.setOpenTime(new LocalDateTime(set.getTimestamp(4)));
+                poll.setCloseTime(new LocalDateTime(set.getTimestamp(5)));
+                poll.setMessageId(set.getLong(6));
             } else {
                 poll = null;
             }
@@ -68,6 +69,7 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             stmt.setString(3, poll.getText());
             stmt.setString(4, LocalDateTime.now().toString());
             stmt.setString(5, LocalDateTime.now().plusDays(1).toString());
+            stmt.setLong(6, poll.getMessageId());
             stmt.execute();
             stmt.close();
             return true;
