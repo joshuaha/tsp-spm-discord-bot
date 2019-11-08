@@ -126,7 +126,7 @@ public class CommandPoll implements Command {
 
             }
             //Edit close time
-            else if ("open time".equalsIgnoreCase(edit)) {
+            else if ("openTime".equalsIgnoreCase(edit)) {
 
                 LocalDateTime openTime = LocalDateTime.parse(args[3]);
 //                LocalDateTime oldTime = this.pollDao.getPoll(pollName).getCloseTime();
@@ -137,7 +137,7 @@ public class CommandPoll implements Command {
                         poll.getText() + " Poll now begins at " + openTime.toString()).queue();
             }
             //Edit close time
-            else if ("end time".equalsIgnoreCase(edit)) {
+            else if ("endTime".equalsIgnoreCase(edit)) {
 
                 LocalDateTime endTime = LocalDateTime.parse(args[3]);
 //                LocalDateTime oldTime = this.pollDao.getPoll(pollName).getCloseTime();
