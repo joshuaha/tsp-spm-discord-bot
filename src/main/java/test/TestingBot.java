@@ -19,6 +19,10 @@ public class TestingBot {
         message.append( "!poll create \n" );
         message.append( "!poll \n" );
         message.append( "!poll create \"PassPoll\" \"Ans1\" \"Ans2\" \n" );
+        message.append( "!poll edit \"Passpoll\" \"Ans1\" \"Ans3\" \n" );
+        message.append(" !poll edit \"Passpoll\" \n");
+        message.append(" !poll edit \"Passpoll\" \"openTime\" \"00:00:00\" \n");
+        message.append(" !poll edit \"Passpoll\" \"endTime\" \"00:00:00\" \n");
         message.append( "!help \"\" \n" );
         message.append( "!help notpoll \n" );
         message.append( "!help \n" );
