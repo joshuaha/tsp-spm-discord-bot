@@ -21,6 +21,7 @@ public class DiscordPollDaoSql implements DiscordPollDao {
     private static final String SQL_REMOVE_OPTIONS = "DELETE FROM OPTIONS WHERE POLL_ID = ?";
     private static final String SQL_GET_VOTES = "SELECT COUNT(*) AS VOTES FROM VOTES WHERE POLL_ID = ? AND OPTION_ID = ?";
     private static final String SQL_SET_VOTE = "INSERT INTO VOTES (POLL_ID, USER_ID, OPTION_ID) VALUES (?, ?, ?)";
+    private static final String SQL_REMOVE_VOTE = "DELETE FROM VOTES WHERE POLL_ID = ? AND USER_ID = ?";
     private static final String SQL_REMOVE_VOTES = "DELETE FROM VOTES WHERE POLL_ID = ?";
     private final DatabaseService databaseService = ServiceFactory.getDatabaseService();
 
@@ -214,6 +215,28 @@ public class DiscordPollDaoSql implements DiscordPollDao {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removeVote(String pollId, long userId) {
+        try {
+            final Connection conn = this.databaseService.getDatabaseConnection();
+            final PreparedStatement stmt = conn.prepareStatement(SQL_REMOVE_VOTE);
+            stmt.setString(1, pollId);
+            stmt.setLong(2, userId);
+            stmt.execute();
+            stmt.close();
+            return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean removeVotes(String pollId) {
         try {

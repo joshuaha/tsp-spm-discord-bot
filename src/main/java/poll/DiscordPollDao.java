@@ -73,6 +73,15 @@ public interface DiscordPollDao {
     int getVotes(String pollId, int optionId);
 
     /**
+     * Removes a single user's vote from the specified poll
+     *
+     * @param pollId the poll ID
+     * @param userId the user ID
+     * @return whether the vote was successfully removed
+     */
+    boolean removeVote(String pollId, long userId);
+
+    /**
      * Removes all user votes associated with the specified poll
      *
      * @param pollId the poll ID

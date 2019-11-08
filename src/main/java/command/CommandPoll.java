@@ -62,7 +62,7 @@ public class CommandPoll implements Command {
             final int vote = Integer.parseInt(args[2]) - 1;
             final long userId = event.getAuthor().getIdLong();
             this.setVote(pollId, userId, vote, event);
-            //TODO - Let user know vote is index not name of option.
+            this.updateResults(pollId, event);
 
         } else if ("results".equals(args[0])) {
 
@@ -159,6 +159,7 @@ public class CommandPoll implements Command {
         final LocalDateTime currentTime = LocalDateTime.now();
         final LocalDateTime openTime = poll.getOpenTime();
         final LocalDateTime closeTime = poll.getCloseTime();
+        this.pollDao.removeVote(pollId, userId);
         if (openTime.compareTo(currentTime) <= 0 && currentTime.compareTo(closeTime) <= 0) {
             return this.pollDao.setVote(pollId, userId, vote);
         } else {
@@ -191,14 +192,13 @@ public class CommandPoll implements Command {
         final DiscordPoll poll = this.pollDao.getPoll(pollId);
         final List<String> options = this.pollDao.getOptions(pollId);
         final StringBuilder message = new StringBuilder();
+        message.append(">>> ");
         message.append(String.format("Poll **%s**", poll.getId())).append(System.lineSeparator());
         message.append(poll.getText()).append(System.lineSeparator());
         for (int optionId = 0; optionId < options.size(); optionId++) {
             int votes = this.pollDao.getVotes(pollId, optionId);
             message.append(String.format("%s: %d", options.get(optionId), votes)).append(System.lineSeparator());
         }
-        System.out.println("AHHH");
-        System.out.println(poll.getMessageId());
         event.getChannel().editMessageById(poll.getMessageId(), message.toString()).queue();
     }
 
