@@ -206,11 +206,11 @@ public class CommandPoll implements Command {
         final List<String> options = this.pollDao.getOptions(pollId);
         final StringBuilder message = new StringBuilder();
         message.append(">>> ");
-        message.append(String.format("Poll **%s**", poll.getId())).append(System.lineSeparator());
+        message.append(String.format("Poll ID: **%s**", poll.getId())).append(System.lineSeparator());
         message.append(poll.getText()).append(System.lineSeparator());
         for (int optionId = 0; optionId < options.size(); optionId++) {
             int votes = this.pollDao.getVotes(pollId, optionId);
-            message.append(String.format("%s: %d", options.get(optionId), votes)).append(System.lineSeparator());
+            message.append(String.format((optionId + 1) + ") " + "%s: %d", options.get(optionId), votes)).append(System.lineSeparator());
         }
         event.getChannel().editMessageById(poll.getMessageId(), message.toString()).queue();
     }
