@@ -7,7 +7,6 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
-
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,11 +70,14 @@ public class CommandPoll implements Command {
 
             final String pollId = args[1];
             final String edit = args[2];
+
+            DiscordPoll poll = this.pollDao.getPoll(pollId);
+
             if ("text".equalsIgnoreCase(edit)) {
 
-                this.pollDao.getPoll(pollId).setText(args[3]);
-                event.getChannel().sendMessage("Successfully editing poll text. New text: \"" + this.pollDao.
-                        getPoll(pollId).getText() + "\"").queue();
+                poll.setText(args[3]);
+                event.getChannel().sendMessage("Successfully editing poll text. New text: \"" +
+                        poll.getText() + "\"").queue();
 
             }
             //Editing options resets the voting
@@ -83,9 +85,11 @@ public class CommandPoll implements Command {
 
                 int optionIndex = Integer.parseInt(args[3]);
                 final String newOption = args[4];
+                List<String> options = this.pollDao.getOptions(pollId);
 
                 //Adding new option
                 if (optionIndex > this.pollDao.getOptions(pollId).size()) {
+
 
                     //Stop users from breaking the bot
                     if (optionIndex > Integer.MAX_VALUE) optionIndex = Integer.MAX_VALUE;
@@ -99,7 +103,6 @@ public class CommandPoll implements Command {
                     }
 
 
-                    List<String> options = this.pollDao.getOptions(pollId);
                     List<String> newOptions = new ArrayList<>();
                     //Copy the old poll options
                     for (String str : options) {
@@ -109,31 +112,43 @@ public class CommandPoll implements Command {
                     this.pollDao.setOptions(pollId, newOptions);
 
                     event.getChannel().sendMessage("Options were updated for " +
-                            this.pollDao.getPoll(pollId).getText() + " Poll results have been reset.").queue();
+                            poll.getText() + " Poll results have been reset.").queue();
 
                 }
                 //Edit existing option
                 else {
-                    List<String> options = this.pollDao.getOptions(pollId);
                     options.set(optionIndex, newOption);
                     this.pollDao.setOptions(pollId, options);
 
                     event.getChannel().sendMessage("Options were updated for " +
-                            this.pollDao.getPoll(pollId).getText() + " Poll results have been reset.").queue();
+                            poll.getText() + " Poll results have been reset.").queue();
                 }
 
             }
             //Edit close time
-            else if ("time".equalsIgnoreCase(edit)) {
+            else if ("open time".equalsIgnoreCase(edit)) {
+
+                LocalDateTime openTime = LocalDateTime.parse(args[3]);
+//                LocalDateTime oldTime = this.pollDao.getPoll(pollName).getCloseTime();
+
+                poll.setOpenTime(openTime);
+
+                event.getChannel().sendMessage("Poll open time updated for  " +
+                        poll.getText() + " Poll now begins at " + openTime.toString()).queue();
+            }
+            //Edit close time
+            else if ("end time".equalsIgnoreCase(edit)) {
 
                 LocalDateTime endTime = LocalDateTime.parse(args[3]);
 //                LocalDateTime oldTime = this.pollDao.getPoll(pollName).getCloseTime();
 
-                this.pollDao.getPoll(pollId).setCloseTime(endTime);
+                poll.setCloseTime(endTime);
 
                 event.getChannel().sendMessage("Poll close time updated for  " +
-                        this.pollDao.getPoll(pollId).getText() + " Poll now ends at " + endTime.toString()).queue();
+                        poll.getText() + " Poll now ends at " + endTime.toString()).queue();
             }
+
+            this.pollDao.updatePoll( poll );
 
         } else {
             event.getChannel().sendMessage("Invalid command. Type \"!help\" for help.").queue();
