@@ -32,7 +32,8 @@ public class MessageListener extends ListenerAdapter {
                     command.execute(args, event);
                     event.getMessage().delete().queue();
                 } else {
-                    event.getChannel().sendMessage(String.format("Command \"%s\" not recognized", alias)).queue();
+                    event.getChannel().sendMessage(String.format("Command \"%s\" not recognized. " +
+                            "Type \"!help\" for help.", alias)).queue();
                 }
             }
         }
