@@ -1,4 +1,4 @@
-**poll answer "pollname" "answer"**
-The poll answer command allows people to answer an existing poll by specifying the name of the existing poll as well as the name of the answer that they would like to vote for.
+**poll vote pollID answerIndex**
+The poll vote command allows people to vote on an existing poll by specifying the ID of the existing poll as well as the index of the answer that they would like to vote for.
 
 **Note that whatever appears in quotation marks needs to also be specified within quotation marks when calling the command.**
