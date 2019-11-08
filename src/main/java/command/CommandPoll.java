@@ -56,11 +56,15 @@ public class CommandPoll implements Command {
         } else if ("vote".equals(args[0])) {
 
             final String pollId = args[1];
-            final int vote = Integer.parseInt(args[2]) - 1;
-            final long userId = event.getAuthor().getIdLong();
-            this.setVote(pollId, userId, vote, event);
-            this.updateResults(pollId, event);
-
+            if ( pollId.length() != 5 ) {
+                event.getChannel().sendMessage("You must enter a valid PollID. Type \"!help\" for help." ).queue();
+                return;
+            } else {
+                final int vote = Integer.parseInt(args[2]) - 1;
+                final long userId = event.getAuthor().getIdLong();
+                this.setVote(pollId, userId, vote, event);
+                this.updateResults(pollId, event);
+            }
         } else if ("results".equals(args[0])) {
 
             final String pollId = args[1];
