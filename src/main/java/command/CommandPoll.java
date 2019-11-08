@@ -44,11 +44,13 @@ public class CommandPoll implements Command {
             final String pollId = DiscordPoll.getUniqueId();
             final String text = args[1];
             final long ownerId = event.getAuthor().getIdLong();
+            final long serverId = event.getGuild().getIdLong();
+            final long channelId = event.getChannel().getIdLong();
             final long messageId = message.getIdLong();
             final String[] options = Arrays.copyOfRange(args, 2, args.length);
             if (options.length < 1 || StringUtils.isEmptyOrWhitespaceOnly(text)) {
                 event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
-            } else if (this.createPoll(pollId, ownerId, text, messageId, options)) {
+            } else if (this.createPoll(pollId, ownerId, text, serverId, channelId, messageId, options)) {
                 this.updateResults(pollId, event);
             } else {
                 event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
@@ -141,7 +143,7 @@ public class CommandPoll implements Command {
         }
     }
 
-    private boolean createPoll(String pollId, long ownerId, String text, long messageId, String[] options) {
+    private boolean createPoll(String pollId, long ownerId, String text, long serverId, long channelId, long messageId, String[] options) {
         final DiscordPoll poll = new DiscordPoll();
         poll.setId(pollId);
         poll.setText(text);
