@@ -150,6 +150,8 @@ public class CommandPoll implements Command {
         poll.setOwnerId(ownerId);
         poll.setOpenTime(LocalDateTime.now());
         poll.setCloseTime(LocalDateTime.now().plusDays(1));
+        poll.setServerId(serverId);
+        poll.setChannelId(channelId);
         poll.setMessageId(messageId);
         return this.pollDao.createPoll(poll) && this.pollDao.setOptions(poll.getId(), Arrays.asList(options));
     }
@@ -159,9 +161,8 @@ public class CommandPoll implements Command {
         final LocalDateTime currentTime = LocalDateTime.now();
         final LocalDateTime openTime = poll.getOpenTime();
         final LocalDateTime closeTime = poll.getCloseTime();
-        this.pollDao.removeVote(pollId, userId);
         if (openTime.compareTo(currentTime) <= 0 && currentTime.compareTo(closeTime) <= 0) {
-            return this.pollDao.setVote(pollId, userId, vote);
+            return this.pollDao.removeVote(pollId, userId) && this.pollDao.setVote(pollId, userId, vote);
         } else {
             return false;
         }

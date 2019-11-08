@@ -13,16 +13,16 @@ import java.util.Collections;
 import java.util.List;
 
 public class DiscordPollDaoSql implements DiscordPollDao {
-    private static final String SQL_GET_POLL = "SELECT ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, MESSAGE_ID FROM POLL WHERE ID = ?";
-    private static final String SQL_CREATE_POLL = "INSERT INTO POLL (ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, MESSAGE_ID) values (?, ?, ?, ?, ?, ?)";
-    private static final String SQL_UPDATE_POLL = "UPDATE POLL SET OWNER_ID = ?, TEXT = ?, OPEN_TIME = ?, CLOSE_TIME = ? WHERE ID = ?";
-    private static final String SQL_GET_OPTIONS = "SELECT * FROM OPTIONS WHERE POLL_ID = ?";
-    private static final String SQL_SET_OPTIONS = "INSERT INTO OPTIONS (POLL_ID, ID, TEXT) VALUES (?, ?, ?)";
-    private static final String SQL_REMOVE_OPTIONS = "DELETE FROM OPTIONS WHERE POLL_ID = ?";
-    private static final String SQL_GET_VOTES = "SELECT COUNT(*) AS VOTES FROM VOTES WHERE POLL_ID = ? AND OPTION_ID = ?";
-    private static final String SQL_SET_VOTE = "INSERT INTO VOTES (POLL_ID, USER_ID, OPTION_ID) VALUES (?, ?, ?)";
-    private static final String SQL_REMOVE_VOTE = "DELETE FROM VOTES WHERE POLL_ID = ? AND USER_ID = ?";
-    private static final String SQL_REMOVE_VOTES = "DELETE FROM VOTES WHERE POLL_ID = ?";
+    private static final String SQL_GET_POLL = "SELECT ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, SERVER_ID, CHANNEL_ID, MESSAGE_ID FROM POLL WHERE ID = ?";
+    private static final String SQL_CREATE_POLL = "INSERT INTO POLL (ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, SERVER_ID, CHANNEL_ID, MESSAGE_ID) values (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_UPDATE_POLL = "UPDATE POLL SET OWNER_ID = ?, TEXT = ?, OPEN_TIME = ?, CLOSE_TIME = ?, SERVER_ID = ?, CHANNEL_ID = ?, MESSAGE_ID = ? WHERE ID = ?";
+    private static final String SQL_GET_OPTIONS = "SELECT * FROM OPTION WHERE POLL_ID = ?";
+    private static final String SQL_SET_OPTIONS = "INSERT INTO OPTION (POLL_ID, ID, TEXT) VALUES (?, ?, ?)";
+    private static final String SQL_REMOVE_OPTIONS = "DELETE FROM OPTION WHERE POLL_ID = ?";
+    private static final String SQL_GET_VOTES = "SELECT COUNT(*) AS VOTES FROM VOTE WHERE POLL_ID = ? AND OPTION_ID = ?";
+    private static final String SQL_SET_VOTE = "INSERT INTO VOTE (POLL_ID, USER_ID, OPTION_ID) VALUES (?, ?, ?)";
+    private static final String SQL_REMOVE_VOTE = "DELETE FROM VOTE WHERE POLL_ID = ? AND USER_ID = ?";
+    private static final String SQL_REMOVE_VOTES = "DELETE FROM VOTE WHERE POLL_ID = ?";
     private final DatabaseService databaseService = ServiceFactory.getDatabaseService();
 
     /**
@@ -44,7 +44,9 @@ public class DiscordPollDaoSql implements DiscordPollDao {
                 poll.setText(set.getString(3));
                 poll.setOpenTime(new LocalDateTime(set.getTimestamp(4)));
                 poll.setCloseTime(new LocalDateTime(set.getTimestamp(5)));
-                poll.setMessageId(set.getLong(6));
+                poll.setServerId(set.getLong(6));
+                poll.setChannelId(set.getLong(7));
+                poll.setMessageId(set.getLong(8));
             } else {
                 poll = null;
             }
@@ -70,7 +72,9 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             stmt.setString(3, poll.getText());
             stmt.setString(4, LocalDateTime.now().toString());
             stmt.setString(5, LocalDateTime.now().plusDays(1).toString());
-            stmt.setLong(6, poll.getMessageId());
+            stmt.setLong(6, poll.getServerId());
+            stmt.setLong(7, poll.getChannelId());
+            stmt.setLong(8, poll.getMessageId());
             stmt.execute();
             stmt.close();
             return true;
@@ -93,6 +97,9 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             stmt.setString(3, poll.getOpenTime().toString());
             stmt.setString(4, poll.getCloseTime().toString());
             stmt.setString(5, poll.getId());
+            stmt.setLong(6, poll.getServerId());
+            stmt.setLong(7, poll.getChannelId());
+            stmt.setLong(8, poll.getMessageId());
             stmt.execute();
             stmt.close();
             return true;
