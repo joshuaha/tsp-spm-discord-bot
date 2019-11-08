@@ -7,6 +7,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
+
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +151,7 @@ public class CommandPoll implements Command {
                         poll.getText() + " Poll now ends at " + endTime.toString()).queue();
             }
 
-            this.pollDao.updatePoll( poll );
+            this.pollDao.updatePoll(poll);
 
         } else {
             event.getChannel().sendMessage("Invalid command. Type \"!help\" for help.").queue();
@@ -185,11 +186,8 @@ public class CommandPoll implements Command {
 
     private void getResults(String pollId, MessageReceivedEvent event) {
         final DiscordPoll poll = this.pollDao.getPoll(pollId);
-        final List<Integer> votes = new ArrayList<>();
         final List<String> options = this.pollDao.getOptions(poll.getId());
-        for (int i = 0; i < options.size(); i++) {
-            votes.add(this.pollDao.getVotes(poll.getId(), i));
-        }
+        final List<Integer> votes = this.pollDao.getVotes(poll.getId());
         //assemble the output message
         final StringBuilder message = new StringBuilder();
         message.append(poll.getId())
@@ -207,13 +205,13 @@ public class CommandPoll implements Command {
     private void updateResults(String pollId, MessageReceivedEvent event) {
         final DiscordPoll poll = this.pollDao.getPoll(pollId);
         final List<String> options = this.pollDao.getOptions(pollId);
+        final List<Integer> votes = this.pollDao.getVotes(pollId);
         final StringBuilder message = new StringBuilder();
         message.append(">>> ");
         message.append(String.format("Poll ID: **%s**", poll.getId())).append(System.lineSeparator());
         message.append(poll.getText()).append(System.lineSeparator());
         for (int optionId = 0; optionId < options.size(); optionId++) {
-            int votes = this.pollDao.getVotes(pollId, optionId);
-            message.append(String.format((optionId + 1) + ") " + "%s: %d", options.get(optionId), votes)).append(System.lineSeparator());
+            message.append(String.format((optionId + 1) + ") " + "%s: %d", options.get(optionId), votes.get(optionId))).append(System.lineSeparator());
         }
         event.getChannel().editMessageById(poll.getMessageId(), message.toString()).queue();
     }

@@ -64,13 +64,12 @@ public interface DiscordPollDao {
     boolean setVote(String pollId, long userId, int optionId);
 
     /**
-     * Gets the number of votes which have been placed for the specified poll option.
+     * Gets the number of votes which have been placed on each option for the specified poll.
      *
      * @param pollId   the poll ID
-     * @param optionId the option ID
-     * @return the number of votes the option has received or {@code -1} if unsuccessful
+     * @return a list of the number of votes each option has received
      */
-    int getVotes(String pollId, int optionId);
+    List<Integer> getVotes(String pollId);
 
     /**
      * Removes a single user's vote from the specified poll
