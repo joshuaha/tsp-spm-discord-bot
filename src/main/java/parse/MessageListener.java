@@ -1,7 +1,7 @@
 package parse;
 
 import command.Command;
-import command.Commands;
+import command.CommandRegistry;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -27,7 +27,7 @@ public class MessageListener extends ListenerAdapter {
                 final String[] split = input.split("\\s+", 2);
                 final String alias = split.length >= 1 ? split[0] : null;
                 final String[] args = this.splitArguments(split.length == 2 ? split[1] : null);
-                final Command command = Commands.getInstance().getCommand(alias);
+                final Command command = CommandRegistry.COMMON_COMMANDS.getCommand(alias);
                 if (command != null) {
                     command.execute(args, event);
                     event.getMessage().delete().queue();

@@ -2,6 +2,7 @@ package poll;
 
 import org.joda.time.LocalDateTime;
 
+import java.util.List;
 import java.util.Random;
 
 public class DiscordPoll {
@@ -24,6 +25,17 @@ public class DiscordPoll {
             id.append(ID_CHARS.charAt(RNG.nextInt(ID_CHARS.length())));
         }
         return id.toString();
+    }
+
+    public static String getDisplayMessage(DiscordPoll poll, List<String> options, List<Integer> votes) {
+        final StringBuilder message = new StringBuilder();
+        message.append(">>> ");
+        message.append(String.format("Poll ID: **%s**", poll.getId())).append(System.lineSeparator());
+        message.append(poll.getText()).append(System.lineSeparator());
+        for (int optionId = 0; optionId < options.size(); optionId++) {
+            message.append(String.format((optionId + 1) + ") " + "%s: %d", options.get(optionId), votes.get(optionId))).append(System.lineSeparator());
+        }
+        return message.toString();
     }
 
     public String getId() {

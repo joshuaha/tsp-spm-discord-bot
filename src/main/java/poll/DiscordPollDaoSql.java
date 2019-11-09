@@ -16,7 +16,7 @@ import java.util.List;
 public class DiscordPollDaoSql implements DiscordPollDao {
     private static final String SQL_GET_POLL = "SELECT POLL_ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, SERVER_ID, CHANNEL_ID, MESSAGE_ID FROM POLL WHERE POLL_ID = ?";
     private static final String SQL_CREATE_POLL = "INSERT INTO POLL (POLL_ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, SERVER_ID, CHANNEL_ID, MESSAGE_ID) values (?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SQL_UPDATE_POLL = "UPDATE POLL SET OWNER_ID = ?, TEXT = ?, OPEN_TIME = ?, CLOSE_TIME = ?, SERVER_ID = ?, CHANNEL_ID = ?, MESSAGE_ID = ? WHERE POLL_ID = ?";
+    private static final String SQL_UPDATE_POLL = "UPDATE POLL SET POLL_ID = ?, OWNER_ID = ?, TEXT = ?, OPEN_TIME = ?, CLOSE_TIME = ?, SERVER_ID = ?, CHANNEL_ID = ?, MESSAGE_ID = ? WHERE POLL_ID = ?";
     private static final String SQL_GET_OPTIONS = "SELECT * FROM OPTION WHERE POLL_ID = ?";
     private static final String SQL_SET_OPTIONS = "INSERT INTO OPTION (POLL_ID, OPTION_ID, TEXT) VALUES (?, ?, ?)";
     private static final String SQL_REMOVE_OPTIONS = "DELETE FROM OPTION WHERE POLL_ID = ?";
@@ -93,14 +93,15 @@ public class DiscordPollDaoSql implements DiscordPollDao {
         try {
             final Connection conn = this.databaseService.getDatabaseConnection();
             final PreparedStatement stmt = conn.prepareStatement(SQL_UPDATE_POLL);
-            stmt.setLong(1, poll.getOwnerId());
-            stmt.setString(2, poll.getText());
-            stmt.setString(3, poll.getOpenTime().toString());
-            stmt.setString(4, poll.getCloseTime().toString());
-            stmt.setString(5, poll.getId());
+            stmt.setString(1, poll.getId());
+            stmt.setLong(2, poll.getOwnerId());
+            stmt.setString(3, poll.getText());
+            stmt.setString(4, poll.getOpenTime().toString());
+            stmt.setString(5, poll.getCloseTime().toString());
             stmt.setLong(6, poll.getServerId());
             stmt.setLong(7, poll.getChannelId());
             stmt.setLong(8, poll.getMessageId());
+            stmt.setString(9, poll.getId());
             stmt.execute();
             stmt.close();
             return true;
