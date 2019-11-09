@@ -1,15 +1,11 @@
 package command;
 
-import factory.ServiceFactory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import poll.DiscordPollDao;
 
 import java.util.Arrays;
 
 
 public class CommandPoll implements Command {
-    private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
-
     /**
      * {@inheritDoc}
      */
