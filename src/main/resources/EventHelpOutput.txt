@@ -1,3 +1,5 @@
+__**Segfault Poll Bot Commands - event**__
+
 **event create "eventname" "location" "dateTime"**
 The event create command will create a new event by listing the name of the event, the location of the event, and the date and time of the event. People will be able to answer whether or not they are going to this event.
 

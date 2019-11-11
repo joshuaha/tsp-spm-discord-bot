@@ -1,5 +1,7 @@
+__**Segfault Poll Bot Commands - poll edit**__
+
 **poll edit "PollID" text "new text"**
-The poll edit name command will allow you to rename an existing poll. Access the existing poll by specifying the name of the poll, and rename it by specifying the new name for the poll.
+The poll edit text command will allow you to rename an existing poll. Access the existing poll by specifying the PollID, and rename it by specifying the new text for the poll.
 
 **poll edit "PollID" option "index" "new option"**
 Poll index begins at 1.
