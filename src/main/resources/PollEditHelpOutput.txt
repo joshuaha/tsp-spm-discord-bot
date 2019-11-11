@@ -1,3 +1,5 @@
+__**Segfault Poll Bot Commands - poll edit**__
+
 **poll edit "pollname" name "new name"**
 The poll edit name command will allow you to rename an existing poll. Access the exisitng poll by specifying the name of the poll, and rename it by specifying the new name for the poll.
 

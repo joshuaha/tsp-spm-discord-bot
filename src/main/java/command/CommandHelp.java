@@ -24,7 +24,7 @@ public class CommandHelp implements Command {
     @Override
     public void execute(String[] args, MessageReceivedEvent event) {
         if (args.length > 0 && (args[0].equals("poll") || args[0].equals("event")))
-            if((args[1].equals("create")) || (args[1].equals("edit")) || (args[1].equals("answer"))){
+            if((args[1].equals("create")) || (args[1].equals("edit")) || (args[1].equals("vote"))){
                 event.getChannel().sendMessage(this.specificHelp(args[0], args[1])).queue();
             } else {
                 event.getChannel().sendMessage(this.getHelpMessage()).queue();
@@ -66,8 +66,8 @@ public class CommandHelp implements Command {
                     resource = this.getClass().getClassLoader().getResource("PollCreateHelpOutput.txt");
                 } else if (action.equals("edit")) {
                     resource = this.getClass().getClassLoader().getResource("PollEditHelpOutput.txt");
-                } else if (action.equals("answer")) {
-                    resource = this.getClass().getClassLoader().getResource("PollAnswerHelpOutput.txt");
+                } else if (action.equals("vote")) {
+                    resource = this.getClass().getClassLoader().getResource("PollVoteHelpOutput.txt");
                 } else {
                     resource = this.getClass().getClassLoader().getResource("PollHelpOutput.txt");
                 }

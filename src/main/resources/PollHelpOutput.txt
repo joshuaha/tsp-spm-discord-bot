@@ -1,3 +1,5 @@
+__**Segfault Poll Bot Commands - poll**__
+
 **poll create "pollname" "answer 1" "answer 2" ...**
 The poll create command will create a poll for members of the server to answer. The poll will have the specified poll name and answers.
 
