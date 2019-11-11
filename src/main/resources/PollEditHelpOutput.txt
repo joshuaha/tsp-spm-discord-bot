@@ -1,7 +1,19 @@
-**poll edit "pollname" name "new name"**
-The poll edit name command will allow you to rename an existing poll. Access the exisitng poll by specifying the name of the poll, and rename it by specifying the new name for the poll.
+__**Segfault Poll Bot Commands - poll edit**__
 
-**poll edit "pollname" option "index" "new option"**
-The poll edit option commnad will allow you to edit an option of an existing poll. Access the existing poll option by specifying the poll name and the index of the desired option to edit. Then you can rename an exisitng option, or add a new option by specifying an index greater than the last index. __**Note that this command will reset all votes for the poll.**__
+**poll edit "PollID" text "new text"**
+The poll edit text command will allow you to rename an existing poll. Access the existing poll by specifying the PollID, and rename it by specifying the new text for the poll.
+
+**poll edit "PollID" option "index" "new option"**
+Poll index begins at 1.
+The poll edit option command will allow you to edit an option of an existing poll. Access the existing poll option by specifying the PollID and the index of the desired option to edit. Then you can rename an existing option. __**Note that this command will reset all votes for the poll.**__
+
+**poll edit "PollID" option add "new option"**
+The poll edit option add command will allow you to add an option of an existing poll. Access the existing poll option by specifying the PollID and "add". Then you can name the option. __**Note that this command will reset all votes for the poll.**__
+
+**poll edit "PollID" openTime "MM-DD-YYYY HH:MM am/pm"**
+The poll edit openTime command will allow you to change the start time of an existing poll. Access the existing poll option by specifying the PollID and openTime. Then specify the new starting time.
+
+**poll edit "PollID" closeTime "MM-DD-YYYY HH:MM am/pm"**
+The poll edit closeTime command will allow you to change the end time of an existing poll. Access the existing poll option by specifying the PollID and closeTime. Then specify the new ending time.
 
 **Note that whatever appears in quotation marks needs to also be specified within quotation marks when calling the command.**
