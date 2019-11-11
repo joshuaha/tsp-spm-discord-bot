@@ -1,15 +1,17 @@
+__**Segfault Poll Bot Commands**__
+
 **All commands must begin with !**
 
 **poll create "pollname" "answer 1" "answer 2" ...**
 The poll create command will create a poll for members of the server to answer. The poll will have the specified poll name and answers.
 
-**poll edit "pollname" name "new name"**
+**poll edit pollID name "new name"**
 The poll edit name command will allow you to rename an existing poll. Access the exisitng poll by specifying the name of the poll, and rename it by specifying the new name for the poll.
 
-**poll edit "pollname" option "index" "new option"**
+**poll edit pollID option "index" "new option"**
 The poll edit option commnad will allow you to edit an option of an existing poll. Access the existing poll option by specifying the poll name and the index of the desired option to edit. Then you can rename an exisitng option, or add a new option by specifying an index greater than the last index. __**Note that this command will reset all votes for the poll.**__
 
-**poll vote "pollname" "option index"**
+**poll vote pollID "option index"**
 The poll vote command allows people to answer an existing poll by specifying the name of the existing poll as well as the index of the option that they would like to vote for.
 
 **event create "eventname" "location" "dateTime"**

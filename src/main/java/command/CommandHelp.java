@@ -10,10 +10,6 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class CommandHelp implements Command {
-    CommandHelp() {
-
-    }
-
     /**
      * {@inheritDoc}
      */

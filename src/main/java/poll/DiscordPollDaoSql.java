@@ -9,20 +9,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class DiscordPollDaoSql implements DiscordPollDao {
-    private static final String SQL_GET_POLL = "SELECT ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, MESSAGE_ID FROM POLL WHERE ID = ?";
-    private static final String SQL_CREATE_POLL = "INSERT INTO POLL (ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, MESSAGE_ID) values (?, ?, ?, ?, ?, ?)";
-    private static final String SQL_UPDATE_POLL = "UPDATE POLL SET OWNER_ID = ?, TEXT = ?, OPEN_TIME = ?, CLOSE_TIME = ? WHERE ID = ?";
-    private static final String SQL_GET_OPTIONS = "SELECT * FROM OPTIONS WHERE POLL_ID = ?";
-    private static final String SQL_SET_OPTIONS = "INSERT INTO OPTIONS (POLL_ID, ID, TEXT) VALUES (?, ?, ?)";
-    private static final String SQL_REMOVE_OPTIONS = "DELETE FROM OPTIONS WHERE POLL_ID = ?";
-    private static final String SQL_GET_VOTES = "SELECT COUNT(*) AS VOTES FROM VOTES WHERE POLL_ID = ? AND OPTION_ID = ?";
-    private static final String SQL_SET_VOTE = "INSERT INTO VOTES (POLL_ID, USER_ID, OPTION_ID) VALUES (?, ?, ?)";
-    private static final String SQL_REMOVE_VOTE = "DELETE FROM VOTES WHERE POLL_ID = ? AND USER_ID = ?";
-    private static final String SQL_REMOVE_VOTES = "DELETE FROM VOTES WHERE POLL_ID = ?";
+    private static final String SQL_GET_POLL = "SELECT POLL_ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, SERVER_ID, CHANNEL_ID, MESSAGE_ID FROM POLL WHERE POLL_ID = ?";
+    private static final String SQL_CREATE_POLL = "INSERT INTO POLL (POLL_ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, SERVER_ID, CHANNEL_ID, MESSAGE_ID) values (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_UPDATE_POLL = "UPDATE POLL SET POLL_ID = ?, OWNER_ID = ?, TEXT = ?, OPEN_TIME = ?, CLOSE_TIME = ?, SERVER_ID = ?, CHANNEL_ID = ?, MESSAGE_ID = ? WHERE POLL_ID = ?";
+    private static final String SQL_GET_OPTIONS = "SELECT * FROM OPTION WHERE POLL_ID = ?";
+    private static final String SQL_SET_OPTIONS = "INSERT INTO OPTION (POLL_ID, OPTION_ID, TEXT) VALUES (?, ?, ?)";
+    private static final String SQL_REMOVE_OPTIONS = "DELETE FROM OPTION WHERE POLL_ID = ?";
+    private static final String SQL_GET_VOTES = "SELECT OPTION_ID, IFNULL(VOTES, 0) AS VOTES FROM OPTION NATURAL LEFT OUTER JOIN (SELECT POLL_ID, OPTION_ID, COUNT(*) AS VOTES FROM VOTE GROUP BY POLL_ID, OPTION_ID) AS T WHERE POLL_ID = ?";
+    private static final String SQL_SET_VOTE = "INSERT INTO VOTE (POLL_ID, USER_ID, OPTION_ID) VALUES (?, ?, ?)";
+    private static final String SQL_REMOVE_VOTE = "DELETE FROM VOTE WHERE POLL_ID = ? AND USER_ID = ?";
+    private static final String SQL_REMOVE_VOTES = "DELETE FROM VOTE WHERE POLL_ID = ?";
     private final DatabaseService databaseService = ServiceFactory.getDatabaseService();
 
     /**
@@ -44,7 +45,9 @@ public class DiscordPollDaoSql implements DiscordPollDao {
                 poll.setText(set.getString(3));
                 poll.setOpenTime(new LocalDateTime(set.getTimestamp(4)));
                 poll.setCloseTime(new LocalDateTime(set.getTimestamp(5)));
-                poll.setMessageId(set.getLong(6));
+                poll.setServerId(set.getLong(6));
+                poll.setChannelId(set.getLong(7));
+                poll.setMessageId(set.getLong(8));
             } else {
                 poll = null;
             }
@@ -70,7 +73,9 @@ public class DiscordPollDaoSql implements DiscordPollDao {
             stmt.setString(3, poll.getText());
             stmt.setString(4, LocalDateTime.now().toString());
             stmt.setString(5, LocalDateTime.now().plusDays(1).toString());
-            stmt.setLong(6, poll.getMessageId());
+            stmt.setLong(6, poll.getServerId());
+            stmt.setLong(7, poll.getChannelId());
+            stmt.setLong(8, poll.getMessageId());
             stmt.execute();
             stmt.close();
             return true;
@@ -88,11 +93,15 @@ public class DiscordPollDaoSql implements DiscordPollDao {
         try {
             final Connection conn = this.databaseService.getDatabaseConnection();
             final PreparedStatement stmt = conn.prepareStatement(SQL_UPDATE_POLL);
-            stmt.setLong(1, poll.getOwnerId());
-            stmt.setString(2, poll.getText());
-            stmt.setString(3, poll.getOpenTime().toString());
-            stmt.setString(4, poll.getCloseTime().toString());
-            stmt.setString(5, poll.getId());
+            stmt.setString(1, poll.getId());
+            stmt.setLong(2, poll.getOwnerId());
+            stmt.setString(3, poll.getText());
+            stmt.setString(4, poll.getOpenTime().toString());
+            stmt.setString(5, poll.getCloseTime().toString());
+            stmt.setLong(6, poll.getServerId());
+            stmt.setLong(7, poll.getChannelId());
+            stmt.setLong(8, poll.getMessageId());
+            stmt.setString(9, poll.getId());
             stmt.execute();
             stmt.close();
             return true;
@@ -172,26 +181,23 @@ public class DiscordPollDaoSql implements DiscordPollDao {
      * {@inheritDoc}
      */
     @Override
-    public int getVotes(String pollId, int optionId) {
+    public List<Integer> getVotes(String pollId) {
         try {
             final Connection conn = this.databaseService.getDatabaseConnection();
             final PreparedStatement stmt = conn.prepareStatement(SQL_GET_VOTES);
             stmt.setString(1, pollId);
-            stmt.setInt(2, optionId);
             stmt.execute();
             final ResultSet set = stmt.getResultSet();
-            final int votes;
-            if (set.next()) {
-                votes = set.getInt("VOTES");
-            } else {
-                votes = -1;
+            final List<Integer> votes = new ArrayList<>();
+            while (set.next()) {
+                votes.add(set.getInt(2));
             }
             set.close();
             stmt.close();
             return votes;
         } catch (SQLException ex) {
             ex.printStackTrace();
-            return -1;
+            return null;
         }
     }
 
