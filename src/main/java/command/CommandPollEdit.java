@@ -36,32 +36,41 @@ public class CommandPollEdit implements Command {
                 this.pollDao.updatePoll(poll);
                 event.getChannel().sendMessage("Successfully edited poll text.").queue();
             } else if ("option".equalsIgnoreCase(property)) {
-                final int index = Integer.parseInt(args[2]) - 1;
                 final String option = args[3];
                 final List<String> options = new ArrayList<>(this.pollDao.getOptions(poll.getId()));
-                //check if index is within the valid range
-                if (index >= 0 && index <= options.size()) {
-                    if (index < options.size()) {
+
+                if ( args[2].equalsIgnoreCase("add") ) {
+                    //if add is called after option add a new option.
+                    options.add(option);
+                    this.pollDao.setOptions(poll.getId(), options);
+                    event.getChannel().sendMessage(String.format("Option %d has been successfully added. " +
+                            "Poll results have been reset", options.size())).queue();
+
+                } else {
+
+                    final int index = Integer.parseInt(args[2]) - 1;
+                    //check if index is within the valid range
+                    if (index >= 0 && index <= options.size()) {
                         //if the index matches an existing option, overwrite that option
                         options.set(index, option);
                         this.pollDao.setOptions(poll.getId(), options);
-                        event.getChannel().sendMessage(String.format("Option %d has been successfully changed. Poll results have been reset.", index + 1)).queue();
+                        event.getChannel().sendMessage(String.format("Option %d has been successfully changed. " +
+                                "Poll results have been reset.", index + 1)).queue();
                     } else {
-                        //if the index falls at the end of the option list, add as new option
-                        options.add(option);
-                        this.pollDao.setOptions(poll.getId(), options);
-                        event.getChannel().sendMessage(String.format("Option %d has been successfully added. Poll results have been reset", index + 1)).queue();
+                        //report if the provided index was invalid
+                        event.getChannel().sendMessage(String.format("%d is not a valid index.", index + 1)).queue();
                     }
-                } else {
-                    //report if the provided index was invalid
-                    event.getChannel().sendMessage(String.format("%d is not a valid index.", index + 1)).queue();
+
                 }
+
             }
             else if("opentime".equalsIgnoreCase(property)) {
                 //update the poll open time
                 poll.setOpenTime(new LocalDateTime(args[2]));
                 this.pollDao.updatePoll(poll);
-                event.getChannel().sendMessage("Poll open time successfully update. Poll now begins at " + poll.getOpenTime()).queue();
+                event.getChannel().sendMessage("Poll open time successfully update. Poll now begins at " +
+                        poll.getOpenTime()).queue();
+
             } else if("closetime".equalsIgnoreCase(property)) {
                 //update the poll close time
                 poll.setCloseTime(new LocalDateTime(args[2]));
