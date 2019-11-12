@@ -2,8 +2,7 @@ package poll;
 
 import org.joda.time.LocalDateTime;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class DiscordPoll {
     private static final int ID_LENGTH = 5;
@@ -28,13 +27,23 @@ public class DiscordPoll {
     }
 
     public static String getDisplayMessage(DiscordPoll poll, List<String> options, List<Integer> votes) {
+        final int barWidthMax = 10;
+        final int totalVotes = votes.stream().reduce(0, Integer::sum);
         final StringBuilder message = new StringBuilder();
-        message.append(">>> ");
+        message.append("```");
         message.append(String.format("Poll ID: **%s**", poll.getId())).append(System.lineSeparator());
         message.append(poll.getText()).append(System.lineSeparator());
         for (int optionId = 0; optionId < options.size(); optionId++) {
-            message.append(String.format((optionId + 1) + ") " + "%s: %d", options.get(optionId), votes.get(optionId))).append(System.lineSeparator());
+            final String optionText = options.get(optionId);
+            final int optionVotes = votes.get(optionId);
+            final StringBuilder optionBar = new StringBuilder();
+            final int optionBarWidth = (int)(((float)votes.get(optionId) / totalVotes) * barWidthMax);
+            for (int i = 0; i < optionBarWidth; i++)
+                optionBar.append('|');
+
+            message.append(String.format("%d) %s :%" + barWidthMax + "s: %d votes", optionId, optionText, optionBar, optionVotes)).append(System.lineSeparator());
         }
+        message.append("```");
         return message.toString();
     }
 
