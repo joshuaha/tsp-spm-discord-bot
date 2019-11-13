@@ -48,7 +48,7 @@ public class CommandPollVote implements Command {
     }
 
     public boolean channelCheck(DiscordPoll poll, MessageReceivedEvent event) {
-        if(Long.parseLong(event.getChannel().getId()) == poll.getChannelId())
+        if(Long.parseLong(event.getChannel().getId()) == poll.getChannelId() && Long.parseLong(event.getGuild().getId()) == poll.getServerId())
             return true;
         else
             return false;
