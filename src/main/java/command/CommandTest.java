@@ -17,18 +17,27 @@ public class CommandTest implements Command {
 
     @Override
     public void execute(String[] args, MessageReceivedEvent event) {
+        if ( args.length == 0 ) {
+            tb.sendTestStrings( event );
+            return;
+        }
+        if ( args[0].equalsIgnoreCase( "create" ) ) {
+            tb.sendCreateTest( event );
+            return;
+        }
+        if ( args[0].equalsIgnoreCase( "help" ) ) {
+            tb.sendHelpTest( event );
+            return;
+        }
+
         tb.initializeTestingPoll( event );
 
         if ( args[0].equalsIgnoreCase("general") ) {
             tb.sendTestStrings( event );
         } else if ( args[0].equalsIgnoreCase("edit") ) {
             tb.sendEditTest( event );
-        } else if ( args[0].equalsIgnoreCase( "create" ) ) {
-            tb.sendCreateTest( event );
-        } else if ( args[0].equalsIgnoreCase( "help" ) ) {
-            tb.sendHelpTest( event );
         } else {
-            tb.sendTestStrings( event );
+            event.getChannel().sendMessage("Ivalid test command.").queue();
         }
 
         //Ignoring check output more work to automate than to manually check output.
