@@ -32,7 +32,12 @@ public class CommandPollVote implements Command {
         if (openTime.compareTo(currentTime) <= 0 && currentTime.compareTo(closeTime) <= 0) {
             final long userId = event.getAuthor().getIdLong();
             final int vote = Integer.parseInt(args[1]) - 1;
-            final boolean success = this.pollDao.removeVote(poll.getId(), userId) && this.pollDao.setVote(poll.getId(), userId, vote);
+            final boolean channelVoteSync = channelVoteSyncCheck(poll, event);
+            boolean success = false;
+            if (channelVoteSync)
+                success = this.pollDao.removeVote(poll.getId(), userId) && this.pollDao.setVote(poll.getId(), userId, vote);
+            else
+                event.getChannel().sendMessage("Be sure to vote in the same channel as the poll.").queue();
             if (success) {
                 final List<String> options = this.pollDao.getOptions(poll.getId());
                 final List<Integer> votes = this.pollDao.getVotes(poll.getId());
@@ -40,5 +45,12 @@ public class CommandPollVote implements Command {
                 event.getChannel().editMessageById(poll.getMessageId(), display).queue();
             }
         }
+    }
+
+    public boolean channelVoteSyncCheck(DiscordPoll poll, MessageReceivedEvent event) {
+        if(Long.parseLong(event.getChannel().getId()) == poll.getChannelId() && Long.parseLong(event.getGuild().getId()) == poll.getServerId())
+            return true;
+        else
+            return false;
     }
 }
