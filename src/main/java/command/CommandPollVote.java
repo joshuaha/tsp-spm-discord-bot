@@ -33,12 +33,22 @@ public class CommandPollVote implements Command {
             final long userId = event.getAuthor().getIdLong();
             final int vote = Integer.parseInt(args[1]) - 1;
             final boolean success = this.pollDao.removeVote(poll.getId(), userId) && this.pollDao.setVote(poll.getId(), userId, vote);
-            if (success) {
+            final boolean channel = channelCheck(poll, event);
+            if (success && channel) {
                 final List<String> options = this.pollDao.getOptions(poll.getId());
                 final List<Integer> votes = this.pollDao.getVotes(poll.getId());
                 final String display = DiscordPoll.getDisplayMessage(poll, options, votes);
                 event.getChannel().editMessageById(poll.getMessageId(), display).queue();
             }
+            else
+                event.getChannel().sendMessage("Be sure to vote in the same channel as the poll.").queue();
         }
+    }
+
+    public boolean channelCheck(DiscordPoll poll, MessageReceivedEvent event) {
+        if(Long.parseLong(event.getChannel().getId()) == poll.getChannelId())
+            return true;
+        else
+            return false;
     }
 }
