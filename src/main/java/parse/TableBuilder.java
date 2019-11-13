@@ -15,12 +15,13 @@ public class TableBuilder {
 
     /**
      * Adds a column to the table. The column length must match the number of rows of the table.
+     *
      * @param column The array of values to insert into the table
      */
     public void append(Object[] column) {
         if (column != null && column.length != this.rows) {
             throw new IllegalArgumentException(String.format("Illegal column length %d, expected %d rows", column.length, this.rows));
-        } else if(column == null) {
+        } else if (column == null) {
             throw new IllegalArgumentException("Column cannot be null");
         } else {
             final String[] array = new String[this.rows];
@@ -33,22 +34,20 @@ public class TableBuilder {
 
     @Override
     public String toString() {
+        final StringBuilder builder = new StringBuilder();
         final List<StringBuilder> rows = new ArrayList<>();
         for (int i = 0; i < this.rows; i++) {
             rows.add(new StringBuilder());
         }
         for (String[] column : this.columns) {
             int maxLength = 0;
-            for (int i = 0; i < rows.size(); i++) {
-                if (column[i].length() > maxLength) {
+            for (int i = 0; i < rows.size(); i++)
+                if (column[i].length() > maxLength)
                     maxLength = column[i].length();
-                }
-            }
-            for (int i = 0; i < rows.size();i++) {
-                rows.get(i).append(String.format("%" + (maxLength + 1) + "s", column[i]));
-            }
+            for (int i = 0; i < rows.size(); i++)
+                if (maxLength > 0)
+                    rows.get(i).append(String.format("%" + maxLength + "s", column[i]));
         }
-        final StringBuilder builder = new StringBuilder();
         for (StringBuilder row : rows) {
             builder.append(row.toString()).append(System.lineSeparator());
         }

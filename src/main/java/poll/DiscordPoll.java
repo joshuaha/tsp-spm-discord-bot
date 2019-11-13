@@ -1,6 +1,7 @@
 package poll;
 
 import org.joda.time.LocalDateTime;
+import parse.TableBuilder;
 
 import java.util.*;
 
@@ -8,6 +9,7 @@ public class DiscordPoll {
     private static final int ID_LENGTH = 5;
     private static final String ID_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final Random RNG = new Random();
+    private static final int BAR_WIDTH = 60;
 
     private String id;
     private long ownerId;
@@ -27,24 +29,44 @@ public class DiscordPoll {
     }
 
     public static String getDisplayMessage(DiscordPoll poll, List<String> options, List<Integer> votes) {
-        final int barWidthMax = 10;
-        final int totalVotes = votes.stream().reduce(0, Integer::sum);
-        final StringBuilder message = new StringBuilder();
-        message.append("```");
-        message.append(String.format("Poll ID: **%s**", poll.getId())).append(System.lineSeparator());
-        message.append(poll.getText()).append(System.lineSeparator());
-        for (int optionId = 0; optionId < options.size(); optionId++) {
-            final String optionText = options.get(optionId);
-            final int optionVotes = votes.get(optionId);
-            final StringBuilder optionBar = new StringBuilder();
-            final int optionBarWidth = (int)(((float)votes.get(optionId) / totalVotes) * barWidthMax);
-            for (int i = 0; i < optionBarWidth; i++)
-                optionBar.append('|');
+        String message = String.format("Poll ID: %s", poll.getId()) + System.lineSeparator() +
+                poll.getText() + System.lineSeparator() +
+                getDisplayTable(poll, options, votes).toString();
+        return "```"
+                + "Poll ID: " + poll.getId() + System.lineSeparator()
+                + poll.getText() + System.lineSeparator()
+                + getDisplayTable(poll, options, votes) + System.lineSeparator()
+                + "```";
+    }
 
-            message.append(String.format("%d) %s :%" + barWidthMax + "s: %d votes", optionId, optionText, optionBar, optionVotes)).append(System.lineSeparator());
+    private static String getDisplayTable(DiscordPoll poll, List<String> options, List<Integer> votes) {
+        final int totalVotes = votes.stream().reduce(0, Integer::sum);
+        final TableBuilder table = new TableBuilder(options.size());
+        final Object[] column = new String[options.size()];
+        for (int i = 0; i < options.size(); i++)
+            column[i] = i + ") ";
+        table.append(column);
+        for (int i = 0; i < options.size(); i++)
+            column[i] = options.get(i);
+        table.append(column);
+        for (int i = 0; i < options.size(); i++)
+            column[i] = " :";
+        table.append(column);
+        for (int i = 0; i < options.size(); i++) {
+            final int barWidth = (int)(((float)votes.get(i) / totalVotes) * BAR_WIDTH);
+            final StringBuilder bar = new StringBuilder();
+            for (int j = 0; j  < barWidth; j++)
+                bar.append('|');
+            column[i] = bar.toString();
         }
-        message.append("```");
-        return message.toString();
+        table.append(column);
+        for (int i = 0; i < options.size();i++)
+            column[i] = ": ";
+        table.append(column);
+        for (int i = 0; i < options.size(); i++)
+            column[i] = votes.get(i) + " vote" + (votes.get(i) != 1 ? "s" : " ");
+        table.append(column);
+        return table.toString();
     }
 
     public String getId() {
