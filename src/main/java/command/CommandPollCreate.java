@@ -3,6 +3,7 @@ package command;
 import factory.ServiceFactory;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
 
@@ -35,6 +36,8 @@ public class CommandPollCreate implements Command {
             poll.setId(DiscordPoll.getUniqueId());
             poll.setText(args[0]);
             poll.setOwnerId(event.getAuthor().getIdLong());
+            poll.setOpenTime(LocalDateTime.now());
+            poll.setCloseTime(LocalDateTime.now().plusDays(1));
             poll.setServerId(event.getGuild().getIdLong());
             poll.setChannelId(event.getChannel().getIdLong());
             poll.setMessageId(message.getIdLong());

@@ -33,6 +33,8 @@ public class DiscordPoll {
                 + "Poll ID: " + poll.getId() + System.lineSeparator()
                 + poll.getText() + System.lineSeparator()
                 + getDisplayTable(poll, options, votes) + System.lineSeparator()
+                + "Open time: " + poll.getOpenTime() + System.lineSeparator()
+                + "Close time: " + poll.getCloseTime() + System.lineSeparator()
                 + "```";
     }
 
@@ -41,7 +43,7 @@ public class DiscordPoll {
         final TableBuilder table = new TableBuilder(options.size());
         final Object[] column = new String[options.size()];
         for (int i = 0; i < options.size(); i++)
-            column[i] = i + ") ";
+            column[i] = (i + 1) + ") ";
         table.append(column);
         for (int i = 0; i < options.size(); i++)
             column[i] = options.get(i);
@@ -50,14 +52,14 @@ public class DiscordPoll {
             column[i] = " :";
         table.append(column);
         for (int i = 0; i < options.size(); i++) {
-            final int barWidth = (int)(((float)votes.get(i) / totalVotes) * BAR_WIDTH);
+            final int barWidth = (int) (((float) votes.get(i) / totalVotes) * BAR_WIDTH);
             final StringBuilder bar = new StringBuilder();
-            for (int j = 0; j  < barWidth; j++)
+            for (int j = 0; j < barWidth; j++)
                 bar.append('|');
             column[i] = bar.toString();
         }
         table.append(column);
-        for (int i = 0; i < options.size();i++)
+        for (int i = 0; i < options.size(); i++)
             column[i] = ": ";
         table.append(column);
         for (int i = 0; i < options.size(); i++)
