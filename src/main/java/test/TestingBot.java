@@ -1,10 +1,13 @@
 package test;
 
 import factory.ServiceFactory;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
+import poll.DiscordPollDaoSql;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +33,7 @@ public class TestingBot {
             final DiscordPoll poll = new DiscordPoll();
             poll.setId( "00000" );
             poll.setText( "TESTING POLL");
-            poll.setOwnerId(event.getAuthor().getIdLong());
+            poll.setOwnerId( event.getJDA().getSelfUser().getIdLong() );
             poll.setServerId(event.getGuild().getIdLong());
             poll.setChannelId(event.getChannel().getIdLong());
             poll.setMessageId(message.getIdLong());
@@ -46,7 +49,7 @@ public class TestingBot {
 
             final DiscordPoll poll = this.pollDao.getPoll( "00000");
             poll.setText( "TESTING POLL");
-            poll.setOwnerId(event.getAuthor().getIdLong());
+            poll.setOwnerId( event.getJDA().getSelfUser().getIdLong() );
             poll.setServerId(event.getGuild().getIdLong());
             poll.setChannelId(event.getChannel().getIdLong());
             poll.setMessageId(message.getIdLong());
@@ -55,7 +58,7 @@ public class TestingBot {
             final String display = DiscordPoll.getDisplayMessage(poll, options, votes);
             event.getChannel().editMessageById(poll.getMessageId(), display).queue();
             if (!success) {
-                event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
+                event.getChannel().sendMessage("Unable to update poll. Type \"!help\" for help.").queue();
             }
         }
 

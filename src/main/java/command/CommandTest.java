@@ -37,7 +37,7 @@ public class CommandTest implements Command {
         } else if ( args[0].equalsIgnoreCase("edit") ) {
             tb.sendEditTest( event );
         } else {
-            event.getChannel().sendMessage("Ivalid test command.").queue();
+            event.getChannel().sendMessage("Invalid test command.").queue();
         }
 
         //Ignoring check output more work to automate than to manually check output.
