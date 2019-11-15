@@ -29,9 +29,6 @@ public class DiscordPoll {
     }
 
     public static String getDisplayMessage(DiscordPoll poll, List<String> options, List<Integer> votes) {
-        String message = String.format("Poll ID: %s", poll.getId()) + System.lineSeparator() +
-                poll.getText() + System.lineSeparator() +
-                getDisplayTable(poll, options, votes).toString();
         return "```"
                 + "Poll ID: " + poll.getId() + System.lineSeparator()
                 + poll.getText() + System.lineSeparator()
