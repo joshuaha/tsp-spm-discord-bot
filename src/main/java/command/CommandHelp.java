@@ -68,8 +68,8 @@ public class CommandHelp implements Command {
                     resource = this.getClass().getClassLoader().getResource("PollEditHelpOutput.txt");
                 } else if (action.equals("vote")) {
                     resource = this.getClass().getClassLoader().getResource("PollVoteHelpOutput.txt");
-                } else if (!action || action == NULL) {
-                    resource = this.getClass().getClassLoader().getResource("PollHelpOutput.txt");
+//                } else if (!action || action == NULL) {
+//                    resource = this.getClass().getClassLoader().getResource("PollHelpOutput.txt");
                 } else {
                     resource = this.getClass().getClassLoader().getResource("PollHelpOutput.txt");
                 }
