@@ -1,14 +1,20 @@
 package command;
 
+import com.mysql.jdbc.TimeUtil;
 import factory.ServiceFactory;
+import groovyjarjarantlr.debug.Event;
+import groovyjarjarantlr.debug.MessageEvent;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import org.apache.commons.collections4.keyvalue.TiedMapEntry;
 import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-public class CommandPollVote implements Command {
+public class CommandPollVote extends CommandAbstract implements Command {
     private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
 
     /**
@@ -36,8 +42,10 @@ public class CommandPollVote implements Command {
             boolean success = false;
             if (channelVoteSync)
                 success = this.pollDao.removeVote(poll.getId(), userId) && this.pollDao.setVote(poll.getId(), userId, vote);
-            else
-                event.getChannel().sendMessage("Be sure to vote in the same channel as the poll.").queue();
+            else {
+                Message x = event.getChannel().sendMessage("Unable to cast vote. Be sure to vote in the same channel as the poll.").complete();
+                deleteMessage(x);
+            }
             if (success) {
                 final List<String> options = this.pollDao.getOptions(poll.getId());
                 final List<Integer> votes = this.pollDao.getVotes(poll.getId());
@@ -53,4 +61,5 @@ public class CommandPollVote implements Command {
         else
             return false;
     }
+    
 }
