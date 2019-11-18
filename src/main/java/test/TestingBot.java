@@ -111,16 +111,17 @@ public class TestingBot {
 
         final StringBuilder message = new StringBuilder();
         message.append( "!poll edit 00000 text uwu \n" ); //Change the text for the poll. PASS
+
         message.append( "!poll edit 00000 OpeNtIMe \"06-09-2012\" \n" ); //Test open time change. FAIL
         message.append( "!poll edit 00000 OPENTIME \"12:00pm\" \n" ); //Test open time change. FAIL
         message.append( "!poll edit 00000 openTIME \"null\" \n" ); //Test open time change. FAIL
         message.append( "!poll edit 00000 opentime \"11-11-2019 04:20pm\" \n" ); //Test open time change. PASS
 
-        message.append( "!poll edit 00000 closeTIME \"06-09-2019 04:20 am\" \n" ); //Test close time before open. PASS
+        message.append( "!poll edit 00000 closeTIME \"06-09-2019 04:20am\" \n" ); //Test close time before open. PASS
         message.append( "!poll edit 00000 closetime \"06-09-2012\" \n" ); //Test open time change. FAIL
         message.append( "!poll edit 00000 CLOSETIME \"12:00pm\" \n" ); //Test open time change. FAIL
         message.append( "!poll edit 00000 cLoSeTiMe \"null\" \n" ); //Test open time change. FAIL
-        message.append( "!poll edit 00000 CLOSEtime \"06-09-2020 04:20 am\" \n" ); //Test open time change. PASS
+        message.append( "!poll edit 00000 CLOSEtime \"06-09-2020 04:20am\" \n" ); //Test open time change. PASS
 
         message.append( "!poll edit 00000 option 1 \"New First\" \n" ); //Edit first option. Else option will be "Option A".
         message.append( "!poll vote 00000 1 \n" ); //This vote should be reset.

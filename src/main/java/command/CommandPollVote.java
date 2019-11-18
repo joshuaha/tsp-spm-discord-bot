@@ -61,5 +61,5 @@ public class CommandPollVote extends CommandAbstract implements Command {
         else
             return false;
     }
-    
+
 }
