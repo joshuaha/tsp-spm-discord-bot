@@ -29,8 +29,13 @@ public class MessageListener extends ListenerAdapter {
                 final String[] args = this.splitArguments(split.length == 2 ? split[1] : null);
                 final Command command = CommandRegistry.COMMON_COMMANDS.getCommand(alias);
                 if (command != null) {
-                    command.execute(args, event);
-                    event.getMessage().delete().queue();
+                    try {
+                        command.execute(args, event);
+                        event.getMessage().delete().queue();
+                    } catch ( Exception e ) {
+                        event.getChannel().sendMessage( "Error encountered parsing command \n"
+                                + "Exception Thrown: " + e ).queue();
+                    }
                 } else {
                     event.getChannel().sendMessage(String.format("Command \"%s\" not recognized. " +
                             "Type \"!help\" for help.", alias)).queue();

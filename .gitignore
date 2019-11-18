@@ -141,3 +141,5 @@ gradle-app.setting
 
 bot.properties
 database.properties
+.idea/misc.xml
+*.xml
