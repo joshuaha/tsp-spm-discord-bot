@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandPollEdit implements Command {
-    private static final DateTimeFormatter DATE_OUTPUT_FORMAT = DateTimeFormat.forPattern("M-d-yyyy");
-    private static final DateTimeFormatter TIME_OUTPUT_FORMAT = DateTimeFormat.forPattern("h:mma");
     private static final DateTimeFormatter DATE_TIME_INPUT_FORMAT = DateTimeFormat.forPattern("M-d-yy h:mma");
     private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
 
@@ -65,16 +63,16 @@ public class CommandPollEdit implements Command {
                 final LocalDateTime openTime = LocalDateTime.parse(args[2], DATE_TIME_INPUT_FORMAT);
                 poll.setOpenTime(openTime);
                 this.pollDao.updatePoll(poll);
-                final String openDateString = poll.getOpenTime().toString(DATE_OUTPUT_FORMAT);
-                final String openTimeString = poll.getOpenTime().toString(TIME_OUTPUT_FORMAT);
+                final String openDateString = poll.getOpenTime().toString(DiscordPoll.DATE_OUTPUT_FORMAT);
+                final String openTimeString = poll.getOpenTime().toString(DiscordPoll.TIME_OUTPUT_FORMAT);
                 event.getChannel().sendMessage(String.format("Poll open time successfully update. Poll now begins on %s at %s.", openDateString, openTimeString)).queue();
             } else if ("closetime".equalsIgnoreCase(property)) {
                 //update the poll close time
                 final LocalDateTime closeTime = LocalDateTime.parse(args[2], DATE_TIME_INPUT_FORMAT);
                 poll.setCloseTime(closeTime);
                 this.pollDao.updatePoll(poll);
-                final String closeDateString = poll.getCloseTime().toString(DATE_OUTPUT_FORMAT);
-                final String closeTimeString = poll.getCloseTime().toString(TIME_OUTPUT_FORMAT);
+                final String closeDateString = poll.getCloseTime().toString(DiscordPoll.DATE_OUTPUT_FORMAT);
+                final String closeTimeString = poll.getCloseTime().toString(DiscordPoll.TIME_OUTPUT_FORMAT);
                 event.getChannel().sendMessage(String.format("Poll end time successfully update. Poll now ends on %s at %s", closeDateString, closeTimeString)).queue();
             }
             //update poll message

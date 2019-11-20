@@ -1,11 +1,17 @@
 package poll;
 
+import command.CommandPollEdit;
 import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import parse.TableBuilder;
 
 import java.util.*;
 
 public class DiscordPoll {
+    public static final DateTimeFormatter DATE_OUTPUT_FORMAT = DateTimeFormat.forPattern("M-d-yyyy");
+    public static final DateTimeFormatter TIME_OUTPUT_FORMAT = DateTimeFormat.forPattern("h:mma");
+
     private static final int ID_LENGTH = 5;
     private static final String ID_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final Random RNG = new Random();
@@ -29,12 +35,16 @@ public class DiscordPoll {
     }
 
     public static String getDisplayMessage(DiscordPoll poll, List<String> options, List<Integer> votes) {
+        final String openDateString = poll.getOpenTime().toString(DATE_OUTPUT_FORMAT);
+        final String openTimeString = poll.getOpenTime().toString(TIME_OUTPUT_FORMAT);
+        final String closeDateString = poll.getCloseTime().toString(DATE_OUTPUT_FORMAT);
+        final String closeTimeString = poll.getCloseTime().toString(TIME_OUTPUT_FORMAT);
         return "```"
                 + "Poll ID: " + poll.getId() + System.lineSeparator()
                 + poll.getText() + System.lineSeparator()
                 + getDisplayTable(poll, options, votes) + System.lineSeparator()
-                + "Open time: " + poll.getOpenTime() + System.lineSeparator()
-                + "Close time: " + poll.getCloseTime() + System.lineSeparator()
+                + "Open time: " + openDateString + " at " + closeTimeString + System.lineSeparator()
+                + "Close time: " + closeDateString + " at " + closeTimeString + System.lineSeparator()
                 + "```";
     }
 
@@ -52,10 +62,10 @@ public class DiscordPoll {
             column[i] = " :";
         table.append(column);
         for (int i = 0; i < options.size(); i++) {
-            final int barWidth = (int) (((float) votes.get(i) / totalVotes) * BAR_WIDTH);
+            final int barWidth = Math.round(((float) votes.get(i) / totalVotes) * BAR_WIDTH);
             final StringBuilder bar = new StringBuilder();
-            for (int j = 0; j < barWidth; j++)
-                bar.append('|');
+            for (int j = 0; j < BAR_WIDTH; j++)
+                bar.append(j < barWidth ? '|' : ' ');
             column[i] = bar.toString();
         }
         table.append(column);
