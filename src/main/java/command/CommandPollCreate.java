@@ -49,7 +49,8 @@ public class CommandPollCreate implements Command {
             success = false;
         }
         if (!success) {
-            event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
+            Message m = SendDeleteMessage.sendMessage(event, "Unable to create poll. Be sure to specify the correct number of arguments. Type \"!help poll create\" for help.");
+            SendDeleteMessage.deleteMessage(m);
         }
     }
 }

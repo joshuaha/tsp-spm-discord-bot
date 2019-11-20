@@ -2,6 +2,8 @@ package parse;
 
 import command.Command;
 import command.CommandRegistry;
+import command.SendDeleteMessage;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -33,12 +35,15 @@ public class MessageListener extends ListenerAdapter {
                         command.execute(args, event);
                         event.getMessage().delete().queue();
                     } catch ( Exception e ) {
-                        event.getChannel().sendMessage( "Error encountered parsing command \n"
-                                + "Exception Thrown: " + e ).queue();
+                        e.printStackTrace();
+                        Message m = SendDeleteMessage.sendMessage(event, "Unable to run command. Be sure to format commands properly. \n" +
+                                "Type \"!help\" for help.");
+                        SendDeleteMessage.deleteMessage(m);
                     }
                 } else {
-                    event.getChannel().sendMessage(String.format("Command \"%s\" not recognized. " +
-                            "Type \"!help\" for help.", alias)).queue();
+                    Message m = SendDeleteMessage.sendMessage(event, String.format("Command \"%s\" not recognized. " +
+                            "Type \"!help\" for help.", alias));
+                    SendDeleteMessage.deleteMessage(m);
                 }
             }
         }
