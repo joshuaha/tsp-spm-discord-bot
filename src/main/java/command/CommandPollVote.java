@@ -10,6 +10,7 @@ import org.apache.commons.collections4.keyvalue.TiedMapEntry;
 import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
+import poll.DiscordPollFormatter;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +50,7 @@ public class CommandPollVote extends CommandAbstract implements Command {
             if (success) {
                 final List<String> options = this.pollDao.getOptions(poll.getId());
                 final List<Integer> votes = this.pollDao.getVotes(poll.getId());
-                final String display = DiscordPoll.getDisplayMessage(poll, options, votes);
+                final String display = DiscordPollFormatter.getDisplayMessage(poll, options, votes);
                 event.getChannel().editMessageById(poll.getMessageId(), display).queue();
             }
         }
