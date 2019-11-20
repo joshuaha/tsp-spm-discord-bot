@@ -6,6 +6,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.joda.time.LocalDateTime;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
+import poll.DiscordPollFormatter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,7 +43,7 @@ public class CommandPollCreate implements Command {
             poll.setChannelId(event.getChannel().getIdLong());
             poll.setMessageId(message.getIdLong());
             success = this.pollDao.createPoll(poll) && this.pollDao.setOptions(poll.getId(), options);
-            final String display = DiscordPoll.getDisplayMessage(poll, options, votes);
+            final String display = DiscordPollFormatter.getDisplayMessage(poll, options, votes);
             event.getChannel().editMessageById(poll.getMessageId(), display).queue();
         } else {
             success = false;
