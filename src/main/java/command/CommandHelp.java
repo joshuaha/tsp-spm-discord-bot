@@ -23,14 +23,19 @@ public class CommandHelp implements Command {
      */
     @Override
     public void execute(String[] args, MessageReceivedEvent event) {
-        if (args.length > 0 && (args[0].equals("poll") || args[0].equals("event")))
-            if((args[1].equals("create")) || (args[1].equals("edit")) || (args[1].equals("vote"))){
-                event.getChannel().sendMessage(this.specificHelp(args[0], args[1])).queue();
+        if (args.length > 0 && (args[0].equals("poll") || args[0].equals("event"))) {
+            if (args.length > 1) {
+                if ((args[1].equalsIgnoreCase("create")) || (args[1].equalsIgnoreCase("edit")) || (args[1].equalsIgnoreCase("vote")) || (args[1].equalsIgnoreCase("all"))) {
+                    event.getChannel().sendMessage(this.specificHelp(args[0], args[1])).queue();
+                } else {
+                    event.getChannel().sendMessage(this.getHelpMessage()).queue();
+                }
             } else {
-                event.getChannel().sendMessage(this.getHelpMessage()).queue();
+                event.getChannel().sendMessage(this.specificHelp(args[0], "")).queue();
             }
-        else
+        } else {
             event.getChannel().sendMessage(this.getHelpMessage()).queue();
+        }
     }
 
     /**
@@ -68,9 +73,10 @@ public class CommandHelp implements Command {
                     resource = this.getClass().getClassLoader().getResource("PollEditHelpOutput.txt");
                 } else if (action.equalsIgnoreCase("vote")) {
                     resource = this.getClass().getClassLoader().getResource("PollVoteHelpOutput.txt");
-                //} else if (!action || action.equals(NULL)) {
-                //    resource = this.getClass().getClassLoader().getResource("PollHelpOutput.txt");
+                } else if (action.equalsIgnoreCase("all") || action.equalsIgnoreCase("")) {
+                    resource = this.getClass().getClassLoader().getResource("PollHelpOutput.txt");
                 } else {
+                    System.out.println("TEST");
                     resource = this.getClass().getClassLoader().getResource("PollHelpOutput.txt");
                 }
                 final File file = resource == null ? new File("") : new File(resource.toURI());
