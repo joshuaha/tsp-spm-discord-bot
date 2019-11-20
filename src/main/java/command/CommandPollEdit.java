@@ -2,7 +2,9 @@ package command;
 
 import factory.ServiceFactory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import poll.DiscordPoll;
@@ -60,7 +62,33 @@ public class CommandPollEdit implements Command {
                 }
             } else if ("opentime".equalsIgnoreCase(property)) {
                 //update the poll open time
+
+                //Check if just date.
+                try {
+                    LocalTime time = LocalTime.parse( args[2] ); //TODO - Add input format when pulled from repo.
+                    //convert to date time.
+                } catch ( Exception e ) {
+                    System.out.println( "Not a valid time format. Exception: " + e );
+                }
+                //check if just time.
+                try {
+                    LocalDate date = LocalDate.parse( args[2] ); //TODO - Add input format when pulled from repo.
+                    //create date time where it starts at midnight
+                } catch ( Exception e ) {
+                    System.out.println( "Not a valid date format. Exception: " + e );
+                }
+                //check if it is a correctly formatted LocalDateTime
+                try {
+                    LocalDateTime dateTime = LocalDateTime.parse( args[2], DATE_TIME_INPUT_FORMAT );
+                } catch ( Exception e ) {
+
+                }
+                // IF NONE OF THESE FORMATS SEND THEM THIS MESSAGE
+                event.getChannel().sendMessage( "Please enter a valid date and time. " +
+                        "Type !help edit openTime" ).queue();
+
                 final LocalDateTime openTime = LocalDateTime.parse(args[2], DATE_TIME_INPUT_FORMAT);
+
                 poll.setOpenTime(openTime);
                 this.pollDao.updatePoll(poll);
                 final String openDateString = poll.getOpenTime().toString(DiscordPoll.DATE_OUTPUT_FORMAT);
