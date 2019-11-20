@@ -60,16 +60,18 @@ public class CommandHelp implements Command {
      */
     public String specificHelp(String command, String action) {
         try {
-            if (command.equals("poll")) {
+            if (command.equalsIgnoreCase("poll")) {
                 final URL resource;
-                if (action.equals("create")) {
+                if (action.equalsIgnoreCase("create")) {
                     resource = this.getClass().getClassLoader().getResource("PollCreateHelpOutput.txt");
-                } else if (action.equals("edit")) {
+                } else if (action.equalsIgnoreCase("edit")) {
                     resource = this.getClass().getClassLoader().getResource("PollEditHelpOutput.txt");
-                } else if (action.equals("vote")) {
+                } else if (action.equalsIgnoreCase("vote")) {
                     resource = this.getClass().getClassLoader().getResource("PollVoteHelpOutput.txt");
-//                } else if (!action || action == NULL) {
+
+//                } else if ( StringUtils.isBlank( action ) ) {
 //                    resource = this.getClass().getClassLoader().getResource("PollHelpOutput.txt");
+
                 } else {
                     resource = this.getClass().getClassLoader().getResource("PollHelpOutput.txt");
                 }
@@ -81,7 +83,7 @@ public class CommandHelp implements Command {
                 }
                 in.close();
                 return message.toString();
-            } else if (command.equals("event")) {
+            } else if (command.equalsIgnoreCase("event")) {
                 final URL resource = this.getClass().getClassLoader().getResource("EventHelpOutput.txt");
                 final File file = resource == null ? new File("") : new File(resource.toURI());
                 final Scanner in = new Scanner(file);
