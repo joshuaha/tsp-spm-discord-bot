@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
 import poll.DiscordPollDaoSql;
+import poll.DiscordPollFormatter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +40,7 @@ public class TestingBot {
             poll.setMessageId(message.getIdLong());
             boolean success = this.pollDao.createPoll(poll) && this.pollDao.setOptions( "00000", options);
 
-            final String display = DiscordPoll.getDisplayMessage(poll, options, votes);
+            final String display = DiscordPollFormatter.getDisplayMessage(poll, options, votes);
             event.getChannel().editMessageById(poll.getMessageId(), display).queue();
             if (!success) {
                 event.getChannel().sendMessage("Unable to create poll. Type \"!help\" for help.").queue();
@@ -55,7 +56,7 @@ public class TestingBot {
             poll.setMessageId(message.getIdLong());
             boolean success = this.pollDao.setOptions( "00000", options) && this.pollDao.updatePoll( poll );
 
-            final String display = DiscordPoll.getDisplayMessage(poll, options, votes);
+            final String display = DiscordPollFormatter.getDisplayMessage(poll, options, votes);
             event.getChannel().editMessageById(poll.getMessageId(), display).queue();
             if (!success) {
                 event.getChannel().sendMessage("Unable to update poll. Type \"!help\" for help.").queue();
