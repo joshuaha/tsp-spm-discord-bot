@@ -14,6 +14,8 @@ import java.util.List;
 
 public class CommandPollEdit implements Command {
     private static final DateTimeFormatter DATE_TIME_INPUT_FORMAT = DateTimeFormat.forPattern("M-d-yy h:mma");
+    private static final DateTimeFormatter DATE_INPUT_FORMAT = DateTimeFormat.forPattern("M-d-yy");
+    private static final DateTimeFormatter TIME_INPUT_FORMAT = DateTimeFormat.forPattern("h:mma");
     private final DiscordPollDao pollDao = ServiceFactory.getDiscordPollDao();
 
     /**
