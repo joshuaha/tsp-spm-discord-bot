@@ -35,7 +35,7 @@ public class CommandPollVote extends CommandAbstract implements Command {
         final LocalDateTime currentTime = LocalDateTime.now();
         final LocalDateTime openTime = poll.getOpenTime();
         final LocalDateTime closeTime = poll.getCloseTime();
-        //ensure that poll is open
+        // Ensures that poll is open when you vote on it. //
         if (openTime.compareTo(currentTime) <= 0 && currentTime.compareTo(closeTime) <= 0) {
             final long userId = event.getAuthor().getIdLong();
             final int vote = Integer.parseInt(args[1]) - 1;
@@ -55,12 +55,9 @@ public class CommandPollVote extends CommandAbstract implements Command {
             }
         }
     }
-
+    // Ensures that votes cannot occur from outside the server and channel that the poll was started in. //
     public boolean channelVoteSyncCheck(DiscordPoll poll, MessageReceivedEvent event) {
-        if(Long.parseLong(event.getChannel().getId()) == poll.getChannelId() && Long.parseLong(event.getGuild().getId()) == poll.getServerId())
-            return true;
-        else
-            return false;
+        return Long.parseLong(event.getChannel().getId()) == poll.getChannelId() && Long.parseLong(event.getGuild().getId()) == poll.getServerId();
     }
 
 }
