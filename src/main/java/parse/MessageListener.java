@@ -4,6 +4,7 @@ import command.Command;
 import command.CommandRegistry;
 import command.SendDeleteMessage;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
