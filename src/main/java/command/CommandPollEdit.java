@@ -58,7 +58,8 @@ public class CommandPollEdit implements Command {
                         event.getChannel().sendMessage(String.format("Option %d has been successfully changed. " + "Poll results have been reset.", index + 1)).queue();
                     } else {
                         //report if the provided index was invalid
-                        event.getChannel().sendMessage(String.format("%d is not a valid index.", index + 1)).queue();
+                        //event.getChannel().sendMessage(String.format("%d is not a valid index.", index + 1)).queue();
+                        SendDeleteMessage.sendDeleteMessage(event, String.format("%d is not a valid index.", index + 1));
                     }
                 }
             } else if ("opentime".equalsIgnoreCase(property)) {
@@ -83,7 +84,8 @@ public class CommandPollEdit implements Command {
             final List<Integer> votes = this.pollDao.getVotes(poll.getId());
             event.getChannel().editMessageById(poll.getMessageId(), DiscordPollFormatter.getDisplayMessage(poll, options, votes)).queue();
         } else {
-            event.getChannel().sendMessage("You do not have permission to edit this poll.").queue();
+            //event.getChannel().sendMessage("You do not have permission to edit this poll.").queue();
+            SendDeleteMessage.sendDeleteMessage(event, "You do not have permission to edit this poll.");
         }
     }
 }

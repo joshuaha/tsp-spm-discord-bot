@@ -25,7 +25,7 @@ public class CommandPoll implements Command {
             final String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
             command.execute(newArgs, event);
         } else {
-            event.getChannel().sendMessage("Invalid command. Type \"!help\" for help.").queue();
+            SendDeleteMessage.sendDeleteMessage(event, "Invalid command. Type \"!help\" for help.");
         }
     }
 }

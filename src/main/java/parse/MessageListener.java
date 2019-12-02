@@ -33,7 +33,7 @@ public class MessageListener extends ListenerAdapter {
                 if (command != null) {
                     try {
                         command.execute(args, event);
-                        event.getMessage().delete().queue();
+                        event.getMessage().delete().queue(); // consuming commands
                     } catch ( Exception e ) {
                         e.printStackTrace();
                         SendDeleteMessage.sendDeleteMessage(event, "Unable to run command. Be sure to format commands properly. \n" +

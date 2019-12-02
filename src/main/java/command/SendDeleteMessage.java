@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SendDeleteMessage {
     public static void deleteMessage(Message m) {
-        m.delete().queueAfter(30, TimeUnit.SECONDS);
+        m.delete().queueAfter(5, TimeUnit.SECONDS);
     } //30
 
     public static Message sendMessage(MessageReceivedEvent event, String message) {
