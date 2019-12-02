@@ -22,7 +22,12 @@ public class DiscordPoll {
     private long channelId;
     private long messageId;
 
+    /**
+     * Returns a unique poll ID
+     * @return the poll ID
+     */
     public static String getUniqueId() {
+        //the poll ID isn't actually guaranteed to be unique we just generate a random string and hope for the best
         final StringBuilder id = new StringBuilder();
         for (int i = 0; i < ID_LENGTH; i++) {
             id.append(ID_CHARS.charAt(RNG.nextInt(ID_CHARS.length())));
