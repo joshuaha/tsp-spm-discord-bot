@@ -37,14 +37,14 @@ public class MessageListener extends ListenerAdapter {
                         event.getMessage().delete().queue();
                     } catch ( Exception e ) {
                         e.printStackTrace();
-                        Message m = SendDeleteMessage.sendMessage(event, "Unable to run command. Be sure to format commands properly. \n" +
+                        SendDeleteMessage.sendDeleteMessage(event, "Unable to run command. Be sure to format commands properly. \n" +
                                 "Type \"!help\" for help.");
-                        SendDeleteMessage.deleteMessage(m);
+                        SendDeleteMessage.deleteMessage(event.getMessage());
                     }
                 } else {
-                    Message m = SendDeleteMessage.sendMessage(event, String.format("Command \"%s\" not recognized. " +
+                    SendDeleteMessage.sendDeleteMessage(event, String.format("Command \"%s\" not recognized. " +
                             "Type \"!help\" for help.", alias));
-                    SendDeleteMessage.deleteMessage(m);
+                    SendDeleteMessage.deleteMessage(event.getMessage());
                 }
             }
         }
