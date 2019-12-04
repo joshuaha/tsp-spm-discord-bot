@@ -25,6 +25,7 @@ public class CommandPollCreate implements Command {
 
     /**
      * {@inheritDoc}
+     * Generates a poll given a user's input if possible, sending a message in Discord stating that the poll was or was able to be created.
      */
     @Override
     public void execute(String[] args, MessageReceivedEvent event) {
@@ -34,6 +35,8 @@ public class CommandPollCreate implements Command {
             final DiscordPoll poll = new DiscordPoll();
             final List<String> options = Arrays.asList(Arrays.copyOfRange(args, 1, args.length));
             final List<Integer> votes = Collections.nCopies(options.size(), 0);
+            // Sets the poll's data to the user's specifications. //
+            // See DiscordPoll.java for reference to the methods such as setId. //
             poll.setId(DiscordPoll.getUniqueId());
             poll.setText(args[0]);
             poll.setOwnerId(event.getAuthor().getIdLong());

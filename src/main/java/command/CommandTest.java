@@ -3,6 +3,9 @@ package command;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import test.TestingBot;
 
+/**
+ * Used for automatic testing.
+ */
 public class CommandTest implements Command {
     private TestingBot tb;
 

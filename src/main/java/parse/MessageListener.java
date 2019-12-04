@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MessageListener extends ListenerAdapter {
+    // Identifier that is used at the beginning of each bot command. //
     private static final String IDENTIFIER = "!";
 
     /**
@@ -25,16 +26,20 @@ public class MessageListener extends ListenerAdapter {
         final Scanner in = new Scanner(event.getMessage().getContentRaw());
         while(in.hasNextLine()) {
             final String line = in.nextLine();
+            // Check to see if message begins with ! //
             if (line.startsWith(IDENTIFIER)) {
                 final String input = line.substring(IDENTIFIER.length());
                 final String[] split = input.split("\\s+", 2);
                 final String alias = split.length >= 1 ? split[0] : null;
                 final String[] args = this.splitArguments(split.length == 2 ? split[1] : null);
                 final Command command = CommandRegistry.COMMON_COMMANDS.getCommand(alias);
+                // If a message that begins with ! is sent in Discord. //
                 if (command != null) {
                     try {
+                        // Attempts to run a non-null message. //
                         command.execute(args, event);
-                        event.getMessage().delete().queue(); // consuming commands
+                        event.getMessage().delete().queue(); // Consuming commands. //
+                        // Catch if command is unrecognisable and does not fall under the program's capabilities. //
                     } catch ( Exception e ) {
                         e.printStackTrace();
                         SendDeleteMessage.sendDeleteMessage(event, "Unable to run command. Be sure to format commands properly. \n" +
@@ -62,10 +67,10 @@ public class MessageListener extends ListenerAdapter {
             return new String[]{};
         } else {
             final List<String> split = new ArrayList<>();
-            //Separates by space but leaves strings surrounded by quotes as its own string.
+            // Separates by space but leaves strings surrounded by quotes as its own string. //
             final Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(args);
             while (m.find()) {
-                //Add .replace("\"", "") to remove surrounding quotes.
+                // Add .replace("\"", "") to remove surrounding quotes. //
                 split.add(m.group(1).replace("\"", ""));
             }
             return split.toArray(new String[]{});

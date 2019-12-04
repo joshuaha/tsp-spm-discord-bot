@@ -11,7 +11,7 @@ public class DatabaseService {
     private static final Connection CONNECTION;
 
     static {
-        //get connection to database using the database properties file
+        // Get connection to database using the database properties file. //
         Connection connection;
         try {
             final Properties properties = new Properties();
