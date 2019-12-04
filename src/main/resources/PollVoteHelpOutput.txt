@@ -1,6 +1,8 @@
 __**Segfault Poll Bot Command - poll vote**__
 
-**poll vote pollID answerIndex**
+**All commands must begin with "!"**
+
+**poll vote *pollID* *answer index***
 The poll vote command allows people to vote on an existing poll by specifying the ID of the existing poll as well as the index of the answer that they would like to vote for.
 
-**Note that whatever appears in quotation marks needs to also be specified within quotation marks when calling the command.**
+**Note that whatever appears in quotation marks needs to also be specified within quotation marks when calling the command and anything appearing in italics is replaced with custom input.**
