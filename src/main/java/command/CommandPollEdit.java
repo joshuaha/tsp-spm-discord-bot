@@ -65,41 +65,95 @@ public class CommandPollEdit implements Command {
                 }
             } else if ("opentime".equalsIgnoreCase(property)) {
                 //update the poll open time
+                LocalTime time = null;
+                LocalDate date = null;
+                LocalDateTime dateTime = null; //Temporary
+                LocalDateTime openTime = null; //The LocalDateTime that will be set.
 
                 //Check if just date.
                 try {
-                    LocalTime time = LocalTime.parse( args[2] ); //TODO - Add input format when pulled from repo.
-                    //convert to date time.
+                    time = LocalTime.parse( args[2], TIME_INPUT_FORMAT ); //replaceAll("\\s+","")
                 } catch ( Exception e ) {
-                    System.out.println( "Not a valid time format. Exception: " + e );
+//                    System.out.println( "Not a valid time format. Exception: " + e );
                 }
-                //check if just time.
+                //Check if just time.
                 try {
-                    LocalDate date = LocalDate.parse( args[2] ); //TODO - Add input format when pulled from repo.
-                    //create date time where it starts at midnight
+                    date = LocalDate.parse( args[2], DATE_INPUT_FORMAT );
                 } catch ( Exception e ) {
-                    System.out.println( "Not a valid date format. Exception: " + e );
+//                    System.out.println( "Not a valid date format. Exception: " + e );
                 }
-                //check if it is a correctly formatted LocalDateTime
+                //Check if it is a correctly formatted LocalDateTime
                 try {
-                    LocalDateTime dateTime = LocalDateTime.parse( args[2], DATE_TIME_INPUT_FORMAT );
+                    dateTime = LocalDateTime.parse( args[2], DATE_TIME_INPUT_FORMAT );
                 } catch ( Exception e ) {
-
+//                    System.out.println( "Not a valid date time format. Exception: " + e );
                 }
-                // IF NONE OF THESE FORMATS SEND THEM THIS MESSAGE
-                event.getChannel().sendMessage( "Please enter a valid date and time. " +
-                        "Type !help edit openTime" ).queue();
 
-                final LocalDateTime openTime = LocalDateTime.parse(args[2], DATE_TIME_INPUT_FORMAT);
+                //Take a wide range of inputs
+                if ( time == null && date == null && dateTime == null ) {
+                    event.getChannel().sendMessage( "Please enter a valid date and time. " +
+                            "Type !help poll edit openTime" ).queue();
+                    return;
+                } else if ( time == null && date == null && dateTime != null ) {
+                    openTime = dateTime;
+                } else if ( time == null && date != null && dateTime == null ) {
+                    String formatted = date.toString( DATE_INPUT_FORMAT ) + " 12:00am";
+                    openTime = LocalDateTime.parse( formatted, DATE_TIME_INPUT_FORMAT );
+                } else if ( time != null && date == null && dateTime == null ) {
+                    String formatted = poll.getOpenTime().toString( DATE_INPUT_FORMAT )
+                            + " " + time.toString( TIME_INPUT_FORMAT);
+                    openTime = LocalDateTime.parse( formatted, DATE_TIME_INPUT_FORMAT );
+                }
 
                 poll.setOpenTime(openTime);
                 this.pollDao.updatePoll(poll);
                 final String openDateString = poll.getOpenTime().toString(DiscordPollFormatter.DATE_OUTPUT_FORMAT);
                 final String openTimeString = poll.getOpenTime().toString(DiscordPollFormatter.TIME_OUTPUT_FORMAT);
-                event.getChannel().sendMessage(String.format("Poll open time successfully update. Poll now begins on %s at %s.", openDateString, openTimeString)).queue();
+                event.getChannel().sendMessage(String.format("Poll open time successfully update. " +
+                        "Poll now begins on %s at %s.", openDateString, openTimeString)).queue();
+
             } else if ("closetime".equalsIgnoreCase(property)) {
                 //update the poll close time
-                final LocalDateTime closeTime = LocalDateTime.parse(args[2], DATE_TIME_INPUT_FORMAT);
+                LocalTime time = null;
+                LocalDate date = null;
+                LocalDateTime dateTime = null; //Temporary
+                LocalDateTime closeTime = null; //The LocalDateTime that will be set.
+
+                //Check if just date.
+                try {
+                    time = LocalTime.parse( args[2].replaceAll("\\s+",""), TIME_INPUT_FORMAT );
+                } catch ( Exception e ) {
+//                    System.out.println( "Not a valid time format. Exception: " + e );
+                }
+                //Check if just time.
+                try {
+                    date = LocalDate.parse( args[2], DATE_INPUT_FORMAT );
+                } catch ( Exception e ) {
+//                    System.out.println( "Not a valid date format. Exception: " + e );
+                }
+                //Check if it is a correctly formatted LocalDateTime
+                try {
+                    dateTime = LocalDateTime.parse( args[2], DATE_TIME_INPUT_FORMAT );
+                } catch ( Exception e ) {
+//                    System.out.println( "Not a valid date time format. Exception: " + e );
+                }
+
+                //Take a wide range of inputs
+                if ( time == null && date == null && dateTime == null ) {
+                    event.getChannel().sendMessage( "Please enter a valid date and time. " +
+                            "Type !help poll edit closeTime" ).queue();
+                    return;
+                } else if ( time == null && date == null && dateTime != null ) {
+                    closeTime = dateTime;
+                } else if ( time == null && date != null && dateTime == null ) {
+                    String formatted = date.toString( DATE_INPUT_FORMAT ) + " 11:59pm";
+                    closeTime = LocalDateTime.parse( formatted, DATE_TIME_INPUT_FORMAT );
+                } else if ( time != null && date == null && dateTime == null ) {
+                    String formatted = poll.getCloseTime().toString( DATE_INPUT_FORMAT )
+                            + " " + time.toString( TIME_INPUT_FORMAT );
+                    closeTime = LocalDateTime.parse( formatted, DATE_TIME_INPUT_FORMAT );
+                }
+
                 poll.setCloseTime(closeTime);
                 this.pollDao.updatePoll(poll);
                 final String closeDateString = poll.getCloseTime().toString(DiscordPollFormatter.DATE_OUTPUT_FORMAT);
