@@ -19,7 +19,7 @@ public class Main {
      * Initializes bot.
      */
     private void init() {
-        final String token = this.loadToken();
+        final String token = this.getBotToken();
         final ListenerAdapter messageListener = new MessageListener();
         try {
             new JDABuilder(AccountType.BOT)
@@ -36,7 +36,7 @@ public class Main {
      *
      * @return the bot token located in the bot properties file
      */
-    private String loadToken() {
+    private String getBotToken() {
         try {
             final Properties properties = new Properties();
             properties.load(new FileInputStream("bot.properties"));
