@@ -85,13 +85,12 @@ public class TestingBot {
     public void sendCreateTest( MessageReceivedEvent event ) {
 
         final StringBuilder message = new StringBuilder();
-//        message.append( "!poll create \"NoArgs\" \n" );
-//        message.append( "!poll create \"\" \"\" \n" );
-//        message.append( "!poll create NoQuotes Ans1 \n" );
-//        message.append( "!poll create \n" );
-//        message.append( "!poll \n" );
-//        message.append( "!poll create \"PassPoll\" \"Ans1\" \"Ans2\" \n" );
-        message.append( "This test is no longer active. Call other test." );
+        message.append( "!poll create \"NoArgs\" \n" );
+        message.append( "!poll create \"\" \"\" \n" );
+        message.append( "!poll create NoQuotes Ans1 \n" );
+        message.append( "!poll create \n" );
+        message.append( "!poll \n" );
+        message.append( "!poll create \"PassPoll\" \"Ans1\" \"Ans2\" \n" );
 
         event.getChannel().sendMessage( message ).queue();
     }
