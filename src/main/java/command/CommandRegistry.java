@@ -19,16 +19,20 @@ public class CommandRegistry {
         POLL_COMMANDS.registerCommand(new CommandPollEdit());
     }
 
-    public void registerCommand(Command command) {
-        final String alias = command.getAlias();
-        if (this.commands.get(alias) == null) {
-            this.commands.put(alias, command);
+    private void registerCommand(Command command) {
+        if (command.getAlias() != null) {
+            final String alias = command.getAlias().toLowerCase();
+            if (this.commands.get(alias) == null) {
+                this.commands.put(alias, command);
+            } else {
+                throw new IllegalArgumentException(String.format("Duplicate command with alias \"%s\"", alias));
+            }
         } else {
-            throw new IllegalArgumentException(String.format("Duplicate command with alias \"%s\"", alias));
+            throw new IllegalArgumentException("Command alias cannot be null");
         }
     }
 
     public Command getCommand(String alias) {
-        return commands.get(alias);
+        return commands.get(alias != null ? alias.toLowerCase() : null);
     }
 }

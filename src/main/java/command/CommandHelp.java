@@ -23,25 +23,31 @@ public class CommandHelp implements Command {
      */
     @Override
     public void execute(String[] args, MessageReceivedEvent event) {
-        if (args.length > 0 && (args[0].equals("poll") || args[0].equals("event"))) {
-            if (args.length > 1) {
-                if ((args[1].equalsIgnoreCase("create")) || (args[1].equalsIgnoreCase("edit")) || (args[1].equalsIgnoreCase("vote")) || (args[1].equalsIgnoreCase("all"))) {
-                    event.getChannel().sendMessage(this.getSpecificHelpMessage(args[0], args[1])).queue();
-                } else {
-                    event.getChannel().sendMessage(this.getHelpMessage()).queue();
-                }
-            } else {
-                event.getChannel().sendMessage(this.getSpecificHelpMessage(args[0], "")).queue();
-            }
+        final String message;
+        if (args.length > 0) {
+           if (CommandRegistry.COMMON_COMMANDS.getCommand(args[0]) != null) {
+               if ("poll".equalsIgnoreCase(args[0]) && args.length > 1) {
+                  if (CommandRegistry.POLL_COMMANDS.getCommand(args[1]) != null) {
+                      message = this.getSpecificHelpMessage(args[0], args[1]);
+                  } else {
+                      message = "Poll subcommand " + args[1] + " not found";
+                  }
+               } else {
+                   message = this.getSpecificHelpMessage(args[0], "");
+               }
+           } else {
+             message = "Command " + args[0] + " not found";
+           }
         } else {
-            event.getChannel().sendMessage(this.getHelpMessage()).queue();
+            message = this.getHelpMessage();
         }
+        event.getChannel().sendMessage(message).queue();
     }
 
     /**
      * Retrieves the message displayed when the !help command is called.
      */
-    public String getHelpMessage() {
+    private String getHelpMessage() {
         try {
             final URL resource = this.getClass().getClassLoader().getResource("HelpOutput.txt");
             final File file = resource == null ? new File("") : new File(resource.toURI());
@@ -62,8 +68,9 @@ public class CommandHelp implements Command {
      * Retrieves the message displayed when the !help poll or !help event commands are called.
      *
      * @param command specifies whether to print help for the event commands or the poll commands
+     * @param action the specific sub
      */
-    public String getSpecificHelpMessage(String command, String action) {
+    private String getSpecificHelpMessage(String command, String action) {
         try {
             // If command is !help poll. //
             if (command.equalsIgnoreCase("poll")) {
