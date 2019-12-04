@@ -1,18 +1,18 @@
 __**Segfault Poll Bot Commands**__
 
-**All commands must begin with !**
+**All commands must begin with "!"**
 
-**poll create "pollname" "answer 1" "answer 2" ...**
-The poll create command will create a poll for members of the server to answer. The poll will have the specified poll name and answers.
+**poll create "question" "answer 1" "answer 2" ...**
+The poll create command will create a poll for members of the server to answer. The poll will have the specified poll question and answers.
 
-**poll edit pollID name "new name"**
-The poll edit name command will allow you to rename an existing poll. Access the existing poll by specifying the name of the poll, and rename it by specifying the new name for the poll.
+**poll edit pollID question "new question"**
+The poll edit name command will allow you to change the question of an existing poll. Access the existing poll by specifying the ID of the poll, and change the question it by specifying the new question for the poll.
 
-**poll edit pollID option "index" "new option"**
-The poll edit option command will allow you to edit an option of an existing poll. Access the existing poll option by specifying the poll name and the index of the desired option to edit. Then you can rename an existing option, or add a new option by specifying an index greater than the last index. __**Note that this command will reset all votes for the poll.**__
+**poll edit pollID answer "index" "new answer"**
+The poll edit option command will allow you to edit an answer of an existing poll. Access the existing poll answer by specifying the poll ID and the index of the desired option to edit. Then you can rename an existing answer, or add a new answer by specifying an index greater than the last index. __**Note that this command will reset all votes for the poll.**__
 
-**poll vote pollID "option index"**
-The poll vote command allows people to answer an existing poll by specifying the name of the existing poll as well as the index of the option that they would like to vote for.
+**poll vote pollID "answer index"**
+The poll vote command allows people to answer an existing poll by specifying the ID of the existing poll as well as the index of the answer that they would like to vote for.
 
 **event create "eventname" "location" "dateTime"**
 The event create command will create a new event by listing the name of the event, the location of the event, and the date and time of the event. People will be able to answer whether or not they are going to this event.

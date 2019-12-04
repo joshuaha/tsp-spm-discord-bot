@@ -39,8 +39,8 @@ public class CommandPollVote implements Command {
             if (channelVoteSync)
                 success = this.pollDao.removeVote(poll.getId(), userId) && this.pollDao.setVote(poll.getId(), userId, vote);
             else {
-                Message m = SendDeleteMessage.sendMessage(event, "Unable to cast vote. Be sure to vote in the same channel as the poll.");
-                SendDeleteMessage.deleteMessage(m);
+                SendDeleteMessage.sendDeleteMessage(event, "Unable to cast vote. Be sure to vote in the same channel as the poll.");
+                SendDeleteMessage.deleteMessage(event.getMessage());
             }
             if (success) {
                 final List<String> options = this.pollDao.getOptions(poll.getId());

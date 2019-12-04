@@ -1,7 +1,6 @@
 package parse;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TableBuilder {
@@ -32,6 +31,10 @@ public class TableBuilder {
         }
     }
 
+    /**
+     * Converts the table into a formatted string.
+     * @return the formatted string
+     */
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();

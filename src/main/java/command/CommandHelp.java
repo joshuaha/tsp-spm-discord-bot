@@ -1,7 +1,6 @@
 package command;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,12 +26,12 @@ public class CommandHelp implements Command {
         if (args.length > 0 && (args[0].equals("poll") || args[0].equals("event"))) {
             if (args.length > 1) {
                 if ((args[1].equalsIgnoreCase("create")) || (args[1].equalsIgnoreCase("edit")) || (args[1].equalsIgnoreCase("vote")) || (args[1].equalsIgnoreCase("all"))) {
-                    event.getChannel().sendMessage(this.specificHelp(args[0], args[1])).queue();
+                    event.getChannel().sendMessage(this.getSpecificHelpMessage(args[0], args[1])).queue();
                 } else {
                     event.getChannel().sendMessage(this.getHelpMessage()).queue();
                 }
             } else {
-                event.getChannel().sendMessage(this.specificHelp(args[0], "")).queue();
+                event.getChannel().sendMessage(this.getSpecificHelpMessage(args[0], "")).queue();
             }
         } else {
             event.getChannel().sendMessage(this.getHelpMessage()).queue();
@@ -64,7 +63,7 @@ public class CommandHelp implements Command {
      *
      * @param command specifies whether to print help for the event commands or the poll commands
      */
-    public String specificHelp(String command, String action) {
+    public String getSpecificHelpMessage(String command, String action) {
         try {
             // If command is !help poll. //
             if (command.equalsIgnoreCase("poll")) {

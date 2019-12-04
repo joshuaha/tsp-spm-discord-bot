@@ -11,6 +11,15 @@ public class DiscordPollFormatter {
     public static final DateTimeFormatter TIME_OUTPUT_FORMAT = DateTimeFormat.forPattern("h:mma");
     private static final int BAR_WIDTH = 60;
 
+    /**
+     * Creates a formatted string to be sent in a Discord message containing information about
+     * poll properties and the current poll status.
+     *
+     * @param poll    the poll object
+     * @param options the list of poll options
+     * @param votes   the number of votes for each option
+     * @return the display string
+     */
     public static String getDisplayMessage(DiscordPoll poll, List<String> options, List<Integer> votes) {
         final String openDateString = poll.getOpenTime().toString(DATE_OUTPUT_FORMAT);
         final String openTimeString = poll.getOpenTime().toString(TIME_OUTPUT_FORMAT);
@@ -32,6 +41,17 @@ public class DiscordPollFormatter {
                 + "```";
     }
 
+    /**
+     * Creates a formatted table as a string to be appended to the display string. The display table is the
+     * portion of the display string which contains the information regarding the options and the votes
+     * cast for each option, as well as bars corresponding to what percent of votes have been cast
+     * for each option.
+     *
+     * @param poll    the poll object
+     * @param options the list of poll options
+     * @param votes   the number of votes for each option
+     * @return the display string
+     */
     private static String getDisplayTable(DiscordPoll poll, List<String> options, List<Integer> votes) {
         int sum = 0;
         for (Integer i : votes)

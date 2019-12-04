@@ -4,6 +4,7 @@ import command.Command;
 import command.CommandRegistry;
 import command.SendDeleteMessage;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -33,17 +34,17 @@ public class MessageListener extends ListenerAdapter {
                 if (command != null) {
                     try {
                         command.execute(args, event);
-                        event.getMessage().delete().queue();
+                        event.getMessage().delete().queue(); // consuming commands
                     } catch ( Exception e ) {
                         e.printStackTrace();
-                        Message m = SendDeleteMessage.sendMessage(event, "Unable to run command. Be sure to format commands properly. \n" +
+                        SendDeleteMessage.sendDeleteMessage(event, "Unable to run command. Be sure to format commands properly. \n" +
                                 "Type \"!help\" for help.");
-                        SendDeleteMessage.deleteMessage(m);
+                        SendDeleteMessage.deleteMessage(event.getMessage());
                     }
                 } else {
-                    Message m = SendDeleteMessage.sendMessage(event, String.format("Command \"%s\" not recognized. " +
+                    SendDeleteMessage.sendDeleteMessage(event, String.format("Command \"%s\" not recognized. " +
                             "Type \"!help\" for help.", alias));
-                    SendDeleteMessage.deleteMessage(m);
+                    SendDeleteMessage.deleteMessage(event.getMessage());
                 }
             }
         }
