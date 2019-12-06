@@ -134,9 +134,7 @@ public class TestingBot {
         message.append( "!poll edit 00000 text uwu \n" ); //Change the text for the poll.
         message.append( "!poll edit 00000 text \"\" \n" ); //Change the text for the poll.
 
-
         event.getChannel().sendMessage( message ).queue();
-
     }
 
     /**
@@ -144,11 +142,8 @@ public class TestingBot {
      */
     public boolean checkOutput( MessageReceivedEvent event ) {
         boolean testPass = false;
-
         String expected = "";
-
         if ( event.getMessage().equals( expected ) ) testPass = true;
-
         return testPass;
     }
 }
