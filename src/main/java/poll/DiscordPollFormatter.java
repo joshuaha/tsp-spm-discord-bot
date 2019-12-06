@@ -14,6 +14,7 @@ public class DiscordPollFormatter {
     /**
      * Creates a formatted string to be sent in a Discord message containing information about
      * poll properties and the current poll status.
+     * Occurs immediately after creating a successful poll.
      *
      * @param poll    the poll object
      * @param options the list of poll options

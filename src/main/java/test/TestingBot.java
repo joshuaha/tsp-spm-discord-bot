@@ -28,7 +28,7 @@ public class TestingBot {
         final List<String> options = new ArrayList<>();
         options.add( "Option A" ); options.add( "Option B");
         final List<Integer> votes = Collections.nCopies(options.size(), 0);
-
+        // Generates a testing poll, given a special ID set to 00000. //
         if ( this.pollDao.getPoll( "00000") == null ) {
 
             final DiscordPoll poll = new DiscordPoll();
@@ -47,7 +47,7 @@ public class TestingBot {
             }
 
         } else {
-
+            // Defines information useful for testing. //
             final DiscordPoll poll = this.pollDao.getPoll( "00000");
             poll.setText( "TESTING POLL");
             poll.setOwnerId( event.getJDA().getSelfUser().getIdLong() );
@@ -82,6 +82,7 @@ public class TestingBot {
         event.getChannel().sendMessage( message ).queue();
     }
 
+    // Test of '!poll create' command. //
     public void sendCreateTest( MessageReceivedEvent event ) {
 
         final StringBuilder message = new StringBuilder();
@@ -95,6 +96,7 @@ public class TestingBot {
         event.getChannel().sendMessage( message ).queue();
     }
 
+    // Test of '!help' commands. //
     public void sendHelpTest( MessageReceivedEvent event ) {
 
         final StringBuilder message = new StringBuilder();
@@ -107,6 +109,7 @@ public class TestingBot {
         event.getChannel().sendMessage( message ).queue();
     }
 
+    // Testing '!poll edit' command. //
     public void sendEditTest( MessageReceivedEvent event ) {
 
         final StringBuilder message = new StringBuilder();
@@ -131,9 +134,7 @@ public class TestingBot {
         message.append( "!poll edit 00000 text uwu \n" ); //Change the text for the poll.
         message.append( "!poll edit 00000 text \"\" \n" ); //Change the text for the poll.
 
-
         event.getChannel().sendMessage( message ).queue();
-
     }
 
     /**
@@ -141,11 +142,8 @@ public class TestingBot {
      */
     public boolean checkOutput( MessageReceivedEvent event ) {
         boolean testPass = false;
-
         String expected = "";
-
         if ( event.getMessage().equals( expected ) ) testPass = true;
-
         return testPass;
     }
 }

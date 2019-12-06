@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class DiscordPollDaoSql implements DiscordPollDao {
+    // SQL statements which are referred to when called by the functions defined below within their respective methods. //
     private static final String SQL_GET_POLL = "SELECT POLL_ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, SERVER_ID, CHANNEL_ID, MESSAGE_ID FROM POLL WHERE POLL_ID = ?";
     private static final String SQL_CREATE_POLL = "INSERT INTO POLL (POLL_ID, OWNER_ID, TEXT, OPEN_TIME, CLOSE_TIME, SERVER_ID, CHANNEL_ID, MESSAGE_ID) values (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_UPDATE_POLL = "UPDATE POLL SET POLL_ID = ?, OWNER_ID = ?, TEXT = ?, OPEN_TIME = ?, CLOSE_TIME = ?, SERVER_ID = ?, CHANNEL_ID = ?, MESSAGE_ID = ? WHERE POLL_ID = ?";
@@ -27,6 +28,7 @@ public class DiscordPollDaoSql implements DiscordPollDao {
     private final DatabaseService databaseService = ServiceFactory.getDatabaseService();
 
     /**
+     * Retrieves information regarding a poll.
      * {@inheritDoc}
      */
     @Override
@@ -61,6 +63,7 @@ public class DiscordPollDaoSql implements DiscordPollDao {
     }
 
     /**
+     * Generates a Poll from user provided input & information.
      * {@inheritDoc}
      */
     @Override
@@ -86,6 +89,7 @@ public class DiscordPollDaoSql implements DiscordPollDao {
     }
 
     /**
+     * Updates a poll based on user specifications.
      * {@inheritDoc}
      */
     @Override
@@ -112,6 +116,7 @@ public class DiscordPollDaoSql implements DiscordPollDao {
     }
 
     /**
+     * Retrieves all options for a given poll, which is specified by a user.
      * {@inheritDoc}
      */
     @Override
@@ -136,6 +141,8 @@ public class DiscordPollDaoSql implements DiscordPollDao {
     }
 
     /**
+     * Sets a number of options for a given poll based on a poll's ID.
+     * Removes all previous options for the poll as well as their associated votes.
      * {@inheritDoc}
      */
     @Override
@@ -161,6 +168,7 @@ public class DiscordPollDaoSql implements DiscordPollDao {
     }
 
     /**
+     * Removes all options for a given poll based on poll ID.
      * {@inheritDoc}
      */
     @Override
@@ -178,6 +186,7 @@ public class DiscordPollDaoSql implements DiscordPollDao {
     }
 
     /**
+     * Retrieves all votes for all options within a given poll based on poll ID.
      * {@inheritDoc}
      */
     @Override
@@ -202,6 +211,8 @@ public class DiscordPollDaoSql implements DiscordPollDao {
     }
 
     /**
+     * Sets vote to a specific option in a poll.
+     * Based on user (to prevent multiple votes) and the poll ID.
      * {@inheritDoc}
      */
     @Override
@@ -222,6 +233,8 @@ public class DiscordPollDaoSql implements DiscordPollDao {
     }
 
     /**
+     * Removes a vote from an option within a poll.
+     * Based on a user's ID and poll ID.
      * {@inheritDoc}
      */
     @Override
@@ -241,6 +254,7 @@ public class DiscordPollDaoSql implements DiscordPollDao {
     }
 
     /**
+     * Removes all allocated votes for all options for a given poll based on poll ID.
      * {@inheritDoc}
      */
     @Override

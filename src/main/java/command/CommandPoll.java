@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 public class CommandPoll implements Command {
     /**
+     * Returns the name of the command specified by a Discord user.
      * {@inheritDoc}
      */
     @Override
@@ -15,6 +16,10 @@ public class CommandPoll implements Command {
     }
 
     /**
+     * Executes the command by referencing CommandRegistry with a set of arguments.
+     * Deletes the message if command is null.
+     * @param args list of command arguments
+     * @param event the message event
      * {@inheritDoc}
      */
     @Override
