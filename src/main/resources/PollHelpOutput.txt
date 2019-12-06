@@ -1,15 +1,16 @@
-__**Segfault Poll Bot Commands - poll**__
+__**Segfault Poll Bot Commands**__
 
 **All commands must begin with "!"**
 
 **poll create "question" "answer 1" "answer 2" ...**
 Creates a poll for members of the server to answer. The poll will have the specified poll question and answers.
 
-**poll edit *pollID* question "new question"**
-Allows you to change the question of an existing poll. Access the existing poll by specifying the ID of the poll, and change the question it by specifying the new question for the poll.
+**poll edit *pollID* text "new text"**
+Allows you to rename an existing poll. Access the existing poll by specifying the PollID, and rename it by specifying the new text for the poll.
 
-**poll edit *pollID* answer "index" "new answer"**
-Allows you to edit an answer of an existing poll. Access the existing poll answer by specifying the poll ID and the index of the desired option to edit. Then you can rename an existing answer, or add a new answer by specifying an index greater than the last index. __**Note that this command will reset all votes for the poll.**__
+**poll edit *pollID* option "index" "new option"**
+Poll index begins at 1.
+Allows you to edit an option of an existing poll. Access the existing poll option by specifying the PollID and the index of the desired option to edit. Then you can rename an existing option. __**Note that this command will reset all votes for the poll.**__
 
 **poll edit *pollID* option add "new option"**
 Allows you to add an option of an existing poll. Access the existing poll option by specifying the PollID and "add". Then you can name the option. __**Note that this command will reset all votes for the poll.**__
@@ -20,7 +21,7 @@ Allows you to change the start time of an existing poll. Access the existing pol
 **poll edit *pollID* closeTime "MM-DD-YYYY HH:MM am/pm"**
 Allows you to change the end time of an existing poll. Access the existing poll option by specifying the PollID and closeTime. Then specify the new ending time.
 
-**poll vote *pollID* "answer index"**
+**poll vote *pollID* *answer index***
 Allows people to answer an existing poll by specifying the ID of the existing poll as well as the index of the answer that they would like to vote for.
 
 **Note that whatever appears in quotation marks needs to also be specified within quotation marks when calling the command and anything appearing in italics is replaced with custom input.**
