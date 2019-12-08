@@ -26,31 +26,29 @@ public class MessageListener extends ListenerAdapter {
         final Scanner in = new Scanner(event.getMessage().getContentRaw());
         while(in.hasNextLine()) {
             final String line = in.nextLine();
-            // Check to see if message begins with ! //
+            //check to see if message begins with specified identifier string
             if (line.startsWith(IDENTIFIER)) {
                 final String input = line.substring(IDENTIFIER.length());
                 final String[] split = input.split("\\s+", 2);
                 final String alias = split.length >= 1 ? split[0] : null;
                 final String[] args = this.splitArguments(split.length == 2 ? split[1] : null);
                 final Command command = CommandRegistry.COMMON_COMMANDS.getCommand(alias);
-                // If a message that begins with ! is sent in Discord. //
+                //check if command is valid
                 if (command != null) {
+                    //try executing command
                     try {
-                        // Attempts to run a non-null message. //
                         command.execute(args, event);
-                        event.getMessage().delete().queue(); // Consuming commands. //
-                        // Catch if command is unrecognisable and does not fall under the program's capabilities. //
                     } catch ( Exception e ) {
                         e.printStackTrace();
                         SendDeleteMessage.sendDeleteMessage(event, "Unable to run command. Be sure to format commands properly. \n" +
                                 "Type \"!help\" for help.");
-                        SendDeleteMessage.deleteMessage(event.getMessage());
                     }
                 } else {
                     SendDeleteMessage.sendDeleteMessage(event, String.format("Command \"%s\" not recognized. " +
                             "Type \"!help\" for help.", alias));
-                    SendDeleteMessage.deleteMessage(event.getMessage());
                 }
+                //delete the message sent by the user
+                //event.getMessage().delete().queue();
             }
         }
     }

@@ -23,8 +23,8 @@ public class DatabaseService {
                     properties.getProperty("password")
             );
         } catch (IOException | ClassNotFoundException | SQLException ex) {
-            ex.printStackTrace();
             connection = null;
+            ex.printStackTrace();
         }
         CONNECTION = connection;
     }

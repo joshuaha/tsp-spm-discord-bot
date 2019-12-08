@@ -73,45 +73,44 @@ public class CommandPollEdit implements Command {
 
                 //Check if just date.
                 try {
-                    time = LocalTime.parse( args[2], TIME_INPUT_FORMAT ); //replaceAll("\\s+","")
-                } catch ( Exception e ) {
+                    time = LocalTime.parse(args[2], TIME_INPUT_FORMAT); //replaceAll("\\s+","")
+                } catch (Exception e) {
 //                    System.out.println( "Not a valid time format. Exception: " + e );
                 }
                 //Check if just time.
                 try {
-                    date = LocalDate.parse( args[2], DATE_INPUT_FORMAT );
-                } catch ( Exception e ) {
+                    date = LocalDate.parse(args[2], DATE_INPUT_FORMAT);
+                } catch (Exception e) {
 //                    System.out.println( "Not a valid date format. Exception: " + e );
                 }
                 //Check if it is a correctly formatted LocalDateTime
                 try {
-                    dateTime = LocalDateTime.parse( args[2], DATE_TIME_INPUT_FORMAT );
-                } catch ( Exception e ) {
+                    dateTime = LocalDateTime.parse(args[2], DATE_TIME_INPUT_FORMAT);
+                } catch (Exception e) {
 //                    System.out.println( "Not a valid date time format. Exception: " + e );
                 }
 
                 //Take a wide range of inputs
-                if ( time == null && date == null && dateTime == null ) {
-                    event.getChannel().sendMessage( "Please enter a valid date and time. " +
-                            "Type !help poll edit openTime" ).queue();
+                if (time == null && date == null && dateTime == null) {
+                    event.getChannel().sendMessage("Please enter a valid date and time. " +
+                            "Type !help poll edit openTime").queue();
                     return;
-                } else if ( time == null && date == null && dateTime != null ) {
+                } else if (time == null && date == null && dateTime != null) {
                     openTime = dateTime;
-                } else if ( time == null && date != null && dateTime == null ) {
-                    String formatted = date.toString( DATE_INPUT_FORMAT ) + " 12:00am";
-                    openTime = LocalDateTime.parse( formatted, DATE_TIME_INPUT_FORMAT );
-                } else if ( time != null && date == null && dateTime == null ) {
-                    String formatted = poll.getOpenTime().toString( DATE_INPUT_FORMAT )
-                            + " " + time.toString( TIME_INPUT_FORMAT);
-                    openTime = LocalDateTime.parse( formatted, DATE_TIME_INPUT_FORMAT );
+                } else if (time == null && date != null && dateTime == null) {
+                    String formatted = date.toString(DATE_INPUT_FORMAT) + " 12:00am";
+                    openTime = LocalDateTime.parse(formatted, DATE_TIME_INPUT_FORMAT);
+                } else if (time != null && date == null && dateTime == null) {
+                    String formatted = poll.getOpenTime().toString(DATE_INPUT_FORMAT)
+                            + " " + time.toString(TIME_INPUT_FORMAT);
+                    openTime = LocalDateTime.parse(formatted, DATE_TIME_INPUT_FORMAT);
                 }
 
                 poll.setOpenTime(openTime);
                 this.pollDao.updatePoll(poll);
                 final String openDateString = poll.getOpenTime().toString(DiscordPollFormatter.DATE_OUTPUT_FORMAT);
                 final String openTimeString = poll.getOpenTime().toString(DiscordPollFormatter.TIME_OUTPUT_FORMAT);
-                event.getChannel().sendMessage(String.format("Poll open time successfully update. " +
-                        "Poll now begins on %s at %s.", openDateString, openTimeString)).queue();
+                event.getChannel().sendMessage(String.format("Poll open time successfully updated. " + "Poll now begins on %s at %s.", openDateString, openTimeString)).queue();
 
             } else if ("closetime".equalsIgnoreCase(property)) {
                 //update the poll close time
@@ -122,44 +121,45 @@ public class CommandPollEdit implements Command {
 
                 //Check if just date.
                 try {
-                    time = LocalTime.parse( args[2].replaceAll("\\s+",""), TIME_INPUT_FORMAT );
-                } catch ( Exception e ) {
+                    time = LocalTime.parse(args[2].replaceAll("\\s+", ""), TIME_INPUT_FORMAT);
+                } catch (Exception e) {
 //                    System.out.println( "Not a valid time format. Exception: " + e );
                 }
                 //Check if just time.
                 try {
-                    date = LocalDate.parse( args[2], DATE_INPUT_FORMAT );
-                } catch ( Exception e ) {
+                    date = LocalDate.parse(args[2], DATE_INPUT_FORMAT);
+                } catch (Exception e) {
 //                    System.out.println( "Not a valid date format. Exception: " + e );
                 }
                 //Check if it is a correctly formatted LocalDateTime
                 try {
-                    dateTime = LocalDateTime.parse( args[2], DATE_TIME_INPUT_FORMAT );
-                } catch ( Exception e ) {
+                    dateTime = LocalDateTime.parse(args[2], DATE_TIME_INPUT_FORMAT);
+                } catch (Exception e) {
 //                    System.out.println( "Not a valid date time format. Exception: " + e );
                 }
 
                 //Take a wide range of inputs
-                if ( time == null && date == null && dateTime == null ) {
-                    event.getChannel().sendMessage( "Please enter a valid date and time. " +
-                            "Type !help poll edit closeTime" ).queue();
+                if (time == null && date == null && dateTime == null) {
+                    SendDeleteMessage.sendDeleteMessage(event, "Please enter a valid date and time. " + "Type !help poll edit closeTime");
                     return;
-                } else if ( time == null && date == null && dateTime != null ) {
+                } else if (time == null && date == null && dateTime != null) {
                     closeTime = dateTime;
-                } else if ( time == null && date != null && dateTime == null ) {
-                    String formatted = date.toString( DATE_INPUT_FORMAT ) + " 11:59pm";
-                    closeTime = LocalDateTime.parse( formatted, DATE_TIME_INPUT_FORMAT );
-                } else if ( time != null && date == null && dateTime == null ) {
-                    String formatted = poll.getCloseTime().toString( DATE_INPUT_FORMAT )
-                            + " " + time.toString( TIME_INPUT_FORMAT );
-                    closeTime = LocalDateTime.parse( formatted, DATE_TIME_INPUT_FORMAT );
+                } else if (time == null && date != null && dateTime == null) {
+                    String formatted = date.toString(DATE_INPUT_FORMAT) + " 11:59pm";
+                    closeTime = LocalDateTime.parse(formatted, DATE_TIME_INPUT_FORMAT);
+                } else if (time != null && date == null && dateTime == null) {
+                    String formatted = poll.getCloseTime().toString(DATE_INPUT_FORMAT)
+                            + " " + time.toString(TIME_INPUT_FORMAT);
+                    closeTime = LocalDateTime.parse(formatted, DATE_TIME_INPUT_FORMAT);
                 }
 
                 poll.setCloseTime(closeTime);
                 this.pollDao.updatePoll(poll);
                 final String closeDateString = poll.getCloseTime().toString(DiscordPollFormatter.DATE_OUTPUT_FORMAT);
                 final String closeTimeString = poll.getCloseTime().toString(DiscordPollFormatter.TIME_OUTPUT_FORMAT);
-                event.getChannel().sendMessage(String.format("Poll end time successfully update. Poll now ends on %s at %s", closeDateString, closeTimeString)).queue();
+                event.getChannel().sendMessage(String.format("Poll close time successfully updated. Poll now ends on %s at %s", closeDateString, closeTimeString)).queue();
+            } else {
+                SendDeleteMessage.sendDeleteMessage(event, property + " is not a valid poll property.");
             }
             //update poll message
             final List<String> options = this.pollDao.getOptions(poll.getId());
