@@ -1,17 +1,13 @@
 package test;
 
 import factory.ServiceFactory;
-import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import poll.DiscordPoll;
 import poll.DiscordPollDao;
-import poll.DiscordPollDaoSql;
 import poll.DiscordPollFormatter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -92,13 +88,12 @@ public class TestingBot {
         message.append( "!poll create \n" );
         message.append( "!poll \n" );
         message.append( "!poll create \"PassPoll\" \"Ans1\" \"Ans2\" \n" );
-
+        message.append("-----");
         event.getChannel().sendMessage( message ).queue();
     }
 
     // Test of '!help' commands. //
     public void sendHelpTest( MessageReceivedEvent event ) {
-
         final StringBuilder message = new StringBuilder();
         message.append( "!help \"\" \n" );
         message.append( "!help notpoll \n" );
@@ -106,6 +101,7 @@ public class TestingBot {
         message.append( "!help poll \n" );
         message.append( "!help event \n" );
         message.append( "!help help \n" );
+        message.append("-----");
         event.getChannel().sendMessage( message ).queue();
     }
 
@@ -113,7 +109,7 @@ public class TestingBot {
     public void sendEditTest( MessageReceivedEvent event ) {
 
         final StringBuilder message = new StringBuilder();
-        message.append( "!poll edit 00000 text uwu \n" ); //Change the text for the poll. PASS
+        message.append( "!poll edit 00000 text test \n" ); //Change the text for the poll. PASS
 
         message.append( "!poll edit 00000 OpeNtIMe \"06-09-2012\" \n" ); //Test open time change. FAIL
         message.append( "!poll edit 00000 OPENTIME \"12:00pm\" \n" ); //Test open time change. FAIL
@@ -131,9 +127,10 @@ public class TestingBot {
         message.append( "!poll edit 00000 option 2 \"New Second\" \n" ); //Edit second option. Else option will be "Option B".
         message.append( "!poll edit 00000 option add \"Third Option\" \n" ); //Add third option.
         message.append( "!poll edit 00000 option 4 \"This should fail\" \n" ); //If this options appears. You did it wrong.
-        message.append( "!poll edit 00000 text uwu \n" ); //Change the text for the poll.
+        message.append( "!poll edit 00000 text test \n" ); //Change the text for the poll.
         message.append( "!poll edit 00000 text \"\" \n" ); //Change the text for the poll.
 
+        message.append("-----");
         event.getChannel().sendMessage( message ).queue();
     }
 
