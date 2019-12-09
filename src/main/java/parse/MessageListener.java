@@ -48,7 +48,7 @@ public class MessageListener extends ListenerAdapter {
                             "Type \"!help\" for help.", alias));
                 }
                 //delete the message sent by the user
-                //event.getMessage().delete().queue();
+                event.getMessage().delete().queue();
             }
         }
     }
